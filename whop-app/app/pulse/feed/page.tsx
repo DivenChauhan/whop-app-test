@@ -5,7 +5,7 @@ import { Message, Reply, Reaction } from '@/lib/supabase';
 import Navbar from '@/components/Navbar';
 
 // TODO: Connect Whop MCP for user authentication
-const CREATOR_ID = 'test-creator-id';
+const CREATOR_ID = '00000000-0000-0000-0000-000000000001';
 const CREATOR_NAME = 'Test Creator'; // Should come from Whop user data
 
 interface MessageWithRelations extends Message {

@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
-import MessageForm from '@/components/FeedbackForm';
+import MessageForm from '@/components/MessageForm';
+import { supabase } from '@/lib/supabase';
 
 interface PageProps {
   params: Promise<{
@@ -9,15 +10,18 @@ interface PageProps {
 
 async function getCreator(slug: string) {
   try {
-    // In production, this would be a server-side fetch
-    // For now, we'll return mock data
-    // TODO: Connect to actual Supabase in production
-    return {
-      id: 'test-creator-id',
-      name: 'Test Creator',
-      email: 'test@example.com',
-      feedback_link: slug,
-    };
+    const { data, error } = await supabase
+      .from('creators')
+      .select('*')
+      .eq('feedback_link', slug)
+      .single();
+
+    if (error) {
+      console.error('Error fetching creator:', error);
+      return null;
+    }
+
+    return data;
   } catch (error) {
     console.error('Error fetching creator:', error);
     return null;

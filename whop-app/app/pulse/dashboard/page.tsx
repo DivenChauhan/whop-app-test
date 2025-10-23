@@ -8,7 +8,7 @@ import Navbar from '@/components/Navbar';
 
 // TODO: Connect Whop MCP for user authentication
 // For now, we'll use a hardcoded creator ID from the test data
-const CREATOR_ID = 'test-creator-id'; // This should come from Whop auth
+const CREATOR_ID = '00000000-0000-0000-0000-000000000001'; // This should come from Whop auth
 const CREATOR_SLUG = 'testcreator'; // This should come from Whop user data
 
 export default function DashboardPage() {
