@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import FeedbackForm from '@/components/FeedbackForm';
+import MessageForm from '@/components/FeedbackForm';
 
 interface PageProps {
   params: Promise<{
@@ -45,8 +45,8 @@ export default async function PublicFeedbackPage({ params }: PageProps) {
           </p>
         </div>
 
-        {/* Feedback Form */}
-        <FeedbackForm creatorId={creator.id} creatorName={creator.name} />
+        {/* Message Form */}
+        <MessageForm creatorId={creator.id} creatorName={creator.name} />
 
         {/* Footer */}
         <div className="mt-8 text-center text-white/70 text-sm">

@@ -1,17 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { Sentiment } from '@/lib/supabase';
+import { MessageTag } from '@/lib/supabase';
 
-interface FeedbackFormProps {
+interface MessageFormProps {
   creatorId: string;
   creatorName?: string;
   onSuccess?: () => void;
 }
 
-export default function FeedbackForm({ creatorId, creatorName, onSuccess }: FeedbackFormProps) {
+export default function MessageForm({ creatorId, creatorName, onSuccess }: MessageFormProps) {
   const [message, setMessage] = useState('');
-  const [sentiment, setSentiment] = useState<Sentiment>('neutral');
+  const [tag, setTag] = useState<MessageTag>('feedback');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -22,7 +22,7 @@ export default function FeedbackForm({ creatorId, creatorName, onSuccess }: Feed
     setSuccess(false);
 
     if (!message.trim()) {
-      setError('Please enter your feedback');
+      setError('Please enter your message');
       return;
     }
 
@@ -37,24 +37,24 @@ export default function FeedbackForm({ creatorId, creatorName, onSuccess }: Feed
         body: JSON.stringify({
           creatorId,
           message: message.trim(),
-          sentiment,
+          tag,
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit feedback');
+        throw new Error('Failed to submit message');
       }
 
       setSuccess(true);
       setMessage('');
-      setSentiment('neutral');
+      setTag('feedback');
 
       if (onSuccess) {
         onSuccess();
       }
     } catch (err) {
-      setError('Failed to submit feedback. Please try again.');
-      console.error('Error submitting feedback:', err);
+      setError('Failed to submit message. Please try again.');
+      console.error('Error submitting message:', err);
     } finally {
       setIsSubmitting(false);
     }
@@ -63,24 +63,24 @@ export default function FeedbackForm({ creatorId, creatorName, onSuccess }: Feed
   return (
     <div className="bg-white rounded-lg shadow-md p-8">
       <h2 className="text-2xl font-bold text-gray-900 mb-2">
-        Share Your Feedback
+        Send Anonymous Message
       </h2>
       {creatorName && (
         <p className="text-gray-600 mb-6">
-          Send anonymous feedback to {creatorName}
+          Share your thoughts with {creatorName}
         </p>
       )}
 
       <form onSubmit={handleSubmit}>
         <div className="mb-6">
           <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-            Your Feedback
+            Your Message
           </label>
           <textarea
             id="message"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="Share your thoughts, suggestions, or concerns..."
+            placeholder="Share your question, feedback, or confession anonymously..."
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-9 focus:border-transparent resize-none"
             rows={6}
             disabled={isSubmitting}
@@ -93,44 +93,44 @@ export default function FeedbackForm({ creatorId, creatorName, onSuccess }: Feed
 
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-3">
-            How do you feel about this?
+            Message Type
           </label>
           <div className="flex gap-3">
             <button
               type="button"
-              onClick={() => setSentiment('up')}
+              onClick={() => setTag('question')}
               disabled={isSubmitting}
               className={`flex-1 px-6 py-4 text-lg rounded-lg font-medium transition-all ${
-                sentiment === 'up'
+                tag === 'question'
+                  ? 'bg-blue-100 text-blue-700 ring-2 ring-blue-500'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              } disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              ❓ Question
+            </button>
+            <button
+              type="button"
+              onClick={() => setTag('feedback')}
+              disabled={isSubmitting}
+              className={`flex-1 px-6 py-4 text-lg rounded-lg font-medium transition-all ${
+                tag === 'feedback'
                   ? 'bg-green-100 text-green-700 ring-2 ring-green-500'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
-              👍 Positive
+              💬 Feedback
             </button>
             <button
               type="button"
-              onClick={() => setSentiment('neutral')}
+              onClick={() => setTag('confession')}
               disabled={isSubmitting}
               className={`flex-1 px-6 py-4 text-lg rounded-lg font-medium transition-all ${
-                sentiment === 'neutral'
-                  ? 'bg-gray-200 text-gray-700 ring-2 ring-gray-500'
+                tag === 'confession'
+                  ? 'bg-purple-100 text-purple-700 ring-2 ring-purple-500'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
-              😐 Neutral
-            </button>
-            <button
-              type="button"
-              onClick={() => setSentiment('down')}
-              disabled={isSubmitting}
-              className={`flex-1 px-6 py-4 text-lg rounded-lg font-medium transition-all ${
-                sentiment === 'down'
-                  ? 'bg-red-100 text-red-700 ring-2 ring-red-500'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              } disabled:opacity-50 disabled:cursor-not-allowed`}
-            >
-              👎 Negative
+              🤫 Confession
             </button>
           </div>
         </div>
@@ -144,7 +144,7 @@ export default function FeedbackForm({ creatorId, creatorName, onSuccess }: Feed
         {success && (
           <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
             <p className="text-sm text-green-700">
-              ✓ Thank you! Your feedback has been submitted anonymously.
+              ✓ Thank you! Your message has been submitted anonymously.
             </p>
           </div>
         )}
@@ -154,11 +154,11 @@ export default function FeedbackForm({ creatorId, creatorName, onSuccess }: Feed
           disabled={isSubmitting || !message.trim()}
           className="w-full px-6 py-3 bg-accent-9 text-white font-medium rounded-lg hover:bg-accent-10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
+          {isSubmitting ? 'Submitting...' : 'Submit Message'}
         </button>
 
         <p className="text-xs text-gray-500 mt-4 text-center">
-          Your feedback is completely anonymous. We don't collect any personal information.
+          Your message is completely anonymous. We don't collect any personal information.
         </p>
       </form>
     </div>

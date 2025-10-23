@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-// PATCH /api/feedback/[id] - Update message (mark as reviewed)
+// PATCH /api/replies/[id] - Update reply (toggle visibility or update text)
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -9,33 +9,41 @@ export async function PATCH(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { reviewed } = body;
+    const { isPublic, replyText } = body;
 
-    if (reviewed === undefined) {
+    const updates: any = {};
+    if (isPublic !== undefined) {
+      updates.is_public = isPublic;
+    }
+    if (replyText !== undefined) {
+      updates.reply_text = replyText;
+    }
+
+    if (Object.keys(updates).length === 0) {
       return NextResponse.json(
-        { error: 'Missing reviewed field' },
+        { error: 'No fields to update' },
         { status: 400 }
       );
     }
 
     const { data, error } = await supabase
-      .from('messages')
-      .update({ reviewed })
+      .from('replies')
+      .update(updates)
       .eq('id', id)
       .select()
       .single();
 
     if (error) {
-      console.error('Error updating message:', error);
+      console.error('Error updating reply:', error);
       return NextResponse.json(
-        { error: 'Failed to update message' },
+        { error: 'Failed to update reply' },
         { status: 500 }
       );
     }
 
     return NextResponse.json({ data }, { status: 200 });
   } catch (error) {
-    console.error('Error in PATCH /api/feedback/[id]:', error);
+    console.error('Error in PATCH /api/replies/[id]:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -43,7 +51,7 @@ export async function PATCH(
   }
 }
 
-// DELETE /api/feedback/[id] - Delete message
+// DELETE /api/replies/[id] - Delete reply
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -52,21 +60,21 @@ export async function DELETE(
     const { id } = await params;
 
     const { error } = await supabase
-      .from('messages')
+      .from('replies')
       .delete()
       .eq('id', id);
 
     if (error) {
-      console.error('Error deleting message:', error);
+      console.error('Error deleting reply:', error);
       return NextResponse.json(
-        { error: 'Failed to delete message' },
+        { error: 'Failed to delete reply' },
         { status: 500 }
       );
     }
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.error('Error in DELETE /api/feedback/[id]:', error);
+    console.error('Error in DELETE /api/replies/[id]:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

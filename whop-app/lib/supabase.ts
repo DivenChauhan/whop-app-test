@@ -13,15 +13,30 @@ export const supabaseAdmin = createClient(
 );
 
 // Database types
-export type Sentiment = 'up' | 'down' | 'neutral';
+export type MessageTag = 'question' | 'feedback' | 'confession';
 
-export interface Feedback {
+export interface Message {
   id: string;
   creator_id: string;
   message: string;
-  sentiment: Sentiment;
+  tag: MessageTag;
   created_at: string;
   reviewed: boolean;
+}
+
+export interface Reply {
+  id: string;
+  message_id: string;
+  reply_text: string;
+  is_public: boolean;
+  created_at: string;
+}
+
+export interface Reaction {
+  id: string;
+  message_id: string;
+  reaction_type: string;
+  created_at: string;
 }
 
 export interface Creator {
@@ -30,5 +45,11 @@ export interface Creator {
   email: string;
   feedback_link: string;
   created_at: string;
+}
+
+// Extended types with relations
+export interface MessageWithReply extends Message {
+  reply?: Reply;
+  reaction_count?: number;
 }
 

@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-// POST /api/feedback - Submit new message
+// POST /api/replies - Create a reply to a message
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { creatorId, message, tag } = body;
+    const { messageId, replyText, isPublic } = body;
 
-    if (!creatorId || !message || !tag) {
+    if (!messageId || !replyText) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -15,27 +15,26 @@ export async function POST(request: NextRequest) {
     }
 
     const { data, error } = await supabase
-      .from('messages')
+      .from('replies')
       .insert({
-        creator_id: creatorId,
-        message,
-        tag,
-        reviewed: false,
+        message_id: messageId,
+        reply_text: replyText,
+        is_public: isPublic ?? false,
       })
       .select()
       .single();
 
     if (error) {
-      console.error('Error creating message:', error);
+      console.error('Error creating reply:', error);
       return NextResponse.json(
-        { error: 'Failed to create message' },
+        { error: 'Failed to create reply' },
         { status: 500 }
       );
     }
 
     return NextResponse.json({ data }, { status: 201 });
   } catch (error) {
-    console.error('Error in POST /api/feedback:', error);
+    console.error('Error in POST /api/replies:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -43,51 +42,43 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET /api/feedback?creatorId=xxx&reviewed=true/false&tag=xxx
+// GET /api/replies?messageId=xxx&publicOnly=true/false
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const creatorId = searchParams.get('creatorId');
-    const reviewedFilter = searchParams.get('reviewed');
-    const tagFilter = searchParams.get('tag');
+    const messageId = searchParams.get('messageId');
+    const publicOnly = searchParams.get('publicOnly');
 
-    if (!creatorId) {
+    if (!messageId) {
       return NextResponse.json(
-        { error: 'Creator ID is required' },
+        { error: 'Message ID is required' },
         { status: 400 }
       );
     }
 
     let query = supabase
-      .from('messages')
-      .select(`
-        *,
-        reply:replies(*)
-      `)
-      .eq('creator_id', creatorId)
+      .from('replies')
+      .select('*')
+      .eq('message_id', messageId)
       .order('created_at', { ascending: false });
 
-    if (reviewedFilter !== null) {
-      query = query.eq('reviewed', reviewedFilter === 'true');
-    }
-
-    if (tagFilter) {
-      query = query.eq('tag', tagFilter);
+    if (publicOnly === 'true') {
+      query = query.eq('is_public', true);
     }
 
     const { data, error } = await query;
 
     if (error) {
-      console.error('Error fetching messages:', error);
+      console.error('Error fetching replies:', error);
       return NextResponse.json(
-        { error: 'Failed to fetch messages' },
+        { error: 'Failed to fetch replies' },
         { status: 500 }
       );
     }
 
     return NextResponse.json({ data }, { status: 200 });
   } catch (error) {
-    console.error('Error in GET /api/feedback:', error);
+    console.error('Error in GET /api/replies:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
