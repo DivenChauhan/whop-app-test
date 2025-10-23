@@ -12,6 +12,7 @@ interface EmojiReactionsProps {
   messageId: string;
   initialReactions?: { emoji: string; count: number }[];
   onReactionUpdate?: (totalCount: number) => void;
+  compact?: boolean; // Show a smaller, preview version
 }
 
 // Quick reactions
@@ -39,7 +40,8 @@ const getUserHash = () => {
 export default function EmojiReactions({ 
   messageId, 
   initialReactions = [],
-  onReactionUpdate 
+  onReactionUpdate,
+  compact = false
 }: EmojiReactionsProps) {
   const [reactions, setReactions] = useState<Reaction[]>([]);
   const [loading, setLoading] = useState(false);
@@ -123,6 +125,38 @@ export default function EmojiReactions({
       setLoading(false);
     }
   };
+
+  // Compact mode: only show reactions with counts > 0
+  if (compact) {
+    const reactionsWithCounts = quickReactions
+      .map(({ emoji }) => {
+        const reaction = reactions.find(r => r.emoji === emoji);
+        return { emoji, count: reaction?.count || 0 };
+      })
+      .filter(r => r.count > 0);
+
+    if (reactionsWithCounts.length === 0) {
+      return (
+        <div className="flex items-center gap-2 text-white/40 text-xs">
+          <span>No reactions yet - be the first!</span>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex items-center gap-2 flex-wrap">
+        {reactionsWithCounts.map(({ emoji, count }) => (
+          <span
+            key={emoji}
+            className="flex items-center gap-1 px-2 py-1 rounded-md bg-white/[0.05] border border-white/[0.08] text-xs"
+          >
+            <span>{emoji}</span>
+            <span className="font-bold text-white/80">{count}</span>
+          </span>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center gap-3 flex-wrap">

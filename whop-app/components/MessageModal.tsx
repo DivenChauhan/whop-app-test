@@ -1,7 +1,7 @@
 'use client';
 
 import { Message, Reply } from '@/lib/supabase';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Typography } from '@whop/frosted-ui';
 import { X } from 'lucide-react';
 import EmojiReactions from './EmojiReactions';
@@ -29,6 +29,14 @@ export default function MessageModal({
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [replyText, setReplyText] = useState('');
   const [makePrivate, setMakePrivate] = useState(false); // FIXED: Changed to makePrivate - when unchecked = public
+
+  // Auto-show reply form if message has no reply and onReply is provided (creator view)
+  useEffect(() => {
+    if (isOpen && onReply) {
+      const hasReply = message.reply && message.reply.length > 0;
+      setShowReplyForm(!hasReply); // Show form immediately if no reply exists
+    }
+  }, [isOpen, message.reply, onReply]);
 
   if (!isOpen) return null;
 

@@ -64,19 +64,16 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-8">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">
-        Send Anonymous Message
-      </h2>
+    <div className="rounded-lg p-2">
       {creatorName && (
-        <p className="text-gray-600 mb-6">
+        <p className="text-white/70 mb-6">
           Share your thoughts with {creatorName}
         </p>
       )}
 
       <form onSubmit={handleSubmit}>
         <div className="mb-6">
-          <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="message" className="block text-sm font-medium text-white mb-2">
             Your Message
           </label>
           <textarea
@@ -84,18 +81,18 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Share your question, feedback, or confession anonymously..."
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-9 focus:border-transparent resize-none"
+            className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.1] text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none placeholder:text-white/40"
             rows={6}
             disabled={isSubmitting}
             maxLength={1000}
           />
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-white/50 mt-1">
             {message.length}/1000 characters
           </p>
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-3">
+          <label className="block text-sm font-medium text-white mb-3">
             Message Type
           </label>
           <div className="flex gap-3">
@@ -105,8 +102,8 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
               disabled={isSubmitting}
               className={`flex-1 px-6 py-4 text-lg rounded-lg font-medium transition-all ${
                 tag === 'question'
-                  ? 'bg-blue-100 text-blue-700 ring-2 ring-blue-500'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-blue-600/30 text-blue-300 ring-2 ring-blue-500'
+                  : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1] border border-white/[0.1]'
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               ❓ Question
@@ -117,8 +114,8 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
               disabled={isSubmitting}
               className={`flex-1 px-6 py-4 text-lg rounded-lg font-medium transition-all ${
                 tag === 'feedback'
-                  ? 'bg-green-100 text-green-700 ring-2 ring-green-500'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-green-600/30 text-green-300 ring-2 ring-green-500'
+                  : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1] border border-white/[0.1]'
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               💬 Feedback
@@ -129,8 +126,8 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
               disabled={isSubmitting}
               className={`flex-1 px-6 py-4 text-lg rounded-lg font-medium transition-all ${
                 tag === 'confession'
-                  ? 'bg-purple-100 text-purple-700 ring-2 ring-purple-500'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-purple-600/30 text-purple-300 ring-2 ring-purple-500'
+                  : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1] border border-white/[0.1]'
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               🤫 Confession
@@ -139,8 +136,8 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-3">
-            Product Category <span className="text-gray-400 text-xs">(Optional)</span>
+          <label className="block text-sm font-medium text-white mb-3">
+            Product Category <span className="text-white/40 text-xs">(Optional)</span>
           </label>
           <div className="grid grid-cols-2 gap-2">
             <button
@@ -149,8 +146,8 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
               disabled={isSubmitting}
               className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
                 productCategory === 'main_product'
-                  ? 'bg-purple-100 text-purple-700 ring-2 ring-purple-500'
-                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                  ? 'bg-purple-600/30 text-purple-300 ring-2 ring-purple-500'
+                  : 'bg-white/[0.03] text-white/60 hover:bg-white/[0.08] border border-white/[0.08]'
               } disabled:opacity-50`}
             >
               🚀 Main Product
@@ -161,8 +158,8 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
               disabled={isSubmitting}
               className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
                 productCategory === 'service'
-                  ? 'bg-yellow-100 text-yellow-700 ring-2 ring-yellow-500'
-                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                  ? 'bg-yellow-600/30 text-yellow-300 ring-2 ring-yellow-500'
+                  : 'bg-white/[0.03] text-white/60 hover:bg-white/[0.08] border border-white/[0.08]'
               } disabled:opacity-50`}
             >
               ⚡ Service
@@ -173,8 +170,8 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
               disabled={isSubmitting}
               className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
                 productCategory === 'feature_request'
-                  ? 'bg-green-100 text-green-700 ring-2 ring-green-500'
-                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                  ? 'bg-green-600/30 text-green-300 ring-2 ring-green-500'
+                  : 'bg-white/[0.03] text-white/60 hover:bg-white/[0.08] border border-white/[0.08]'
               } disabled:opacity-50`}
             >
               🎁 Feature Request
@@ -185,8 +182,8 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
               disabled={isSubmitting}
               className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
                 productCategory === 'bug_report'
-                  ? 'bg-red-100 text-red-700 ring-2 ring-red-500'
-                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                  ? 'bg-red-600/30 text-red-300 ring-2 ring-red-500'
+                  : 'bg-white/[0.03] text-white/60 hover:bg-white/[0.08] border border-white/[0.08]'
               } disabled:opacity-50`}
             >
               🐛 Bug Report
@@ -197,8 +194,8 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
               disabled={isSubmitting}
               className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
                 productCategory === 'other'
-                  ? 'bg-gray-200 text-gray-700 ring-2 ring-gray-500'
-                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                  ? 'bg-white/20 text-white ring-2 ring-white/50'
+                  : 'bg-white/[0.03] text-white/60 hover:bg-white/[0.08] border border-white/[0.08]'
               } disabled:opacity-50`}
             >
               📝 Other
@@ -207,14 +204,14 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
         </div>
 
         {error && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-700">{error}</p>
+          <div className="mb-4 p-4 bg-red-500/20 border border-red-500/30 rounded-lg">
+            <p className="text-sm text-red-300">{error}</p>
           </div>
         )}
 
         {success && (
-          <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-            <p className="text-sm text-green-700">
+          <div className="mb-4 p-4 bg-green-500/20 border border-green-500/30 rounded-lg">
+            <p className="text-sm text-green-300">
               ✓ Thank you! Your message has been submitted anonymously.
             </p>
           </div>
@@ -223,12 +220,12 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
         <button
           type="submit"
           disabled={isSubmitting || !message.trim()}
-          className="w-full px-6 py-3 bg-accent-9 text-white font-medium rounded-lg hover:bg-accent-10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? 'Submitting...' : 'Submit Message'}
         </button>
 
-        <p className="text-xs text-gray-500 mt-4 text-center">
+        <p className="text-xs text-white/50 mt-4 text-center">
           Your message is completely anonymous. We don't collect any personal information.
         </p>
       </form>

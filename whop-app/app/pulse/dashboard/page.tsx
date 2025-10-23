@@ -201,8 +201,13 @@ export default function DashboardPage() {
   const totalMessages = messages.length;
   const thisWeekMessages = messages.filter(m => new Date(m.created_at) >= oneWeekAgo).length;
   const pendingMessages = messages.filter(m => !m.reviewed && (!m.reply || m.reply.length === 0));
-  const inboxMessages = messages.filter(m => !m.reviewed);
-  const reviewedMessages = messages.filter(m => m.reviewed);
+  
+  // Inbox: messages without replies (not yet handled)
+  const inboxMessages = messages.filter(m => !m.reply || m.reply.length === 0);
+  
+  // Reviewed: messages with replies OR manually marked as reviewed
+  const reviewedMessages = messages.filter(m => (m.reply && m.reply.length > 0) || m.reviewed);
+  
   const repliedMessages = messages.filter(m => m.reply && m.reply.length > 0).length;
 
   const oldUnansweredMessages = messages.filter(m => {
@@ -410,9 +415,6 @@ export default function DashboardPage() {
                   <Typography as="h2" variant="title-sm" className="text-white font-bold">
                     Hot Posts
                   </Typography>
-                  <span className="px-2.5 py-0.5 bg-orange-500/20 text-orange-300 text-xs rounded-full border border-orange-500/30">
-                    {allMessages.filter(m => (m.reaction_count || 0) >= 5).slice(0, 5).length}
-                  </span>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -655,7 +657,7 @@ export default function DashboardPage() {
                     >
                       {/* Card Header - Always Visible */}
                       <div className="p-4">
-                        <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start justify-between gap-4 mb-3">
                           <div className="flex-1">
                             {/* Tags */}
                             <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -776,6 +778,20 @@ export default function DashboardPage() {
                             </div>
                           </div>
                         </div>
+
+                        {/* Quick Reply Button - Bottom Right */}
+                        {!hasReply && !isExpanded && (
+                          <div className="flex justify-end">
+                            <Button
+                              onClick={() => setSelectedMessage(message)}
+                              size="sm"
+                              variant="primary"
+                              className="text-white text-xs"
+                            >
+                              Reply
+                            </Button>
+                          </div>
+                        )}
                       </div>
 
                       {/* Expanded Content */}
