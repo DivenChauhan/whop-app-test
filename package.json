@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@whop/api": "^0.0.51"
+  },
+  "devDependencies": {
+    "@whop-apps/dev-proxy": "^0.0.1-canary.117"
+  }
+}
