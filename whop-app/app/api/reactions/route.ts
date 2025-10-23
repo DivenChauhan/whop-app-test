@@ -5,20 +5,37 @@ import { supabase } from '@/lib/supabase';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { messageId, reactionType } = body;
+    const { messageId, reactionType, userHash } = body;
 
-    if (!messageId) {
+    if (!messageId || !userHash) {
       return NextResponse.json(
-        { error: 'Missing message ID' },
+        { error: 'Missing required fields' },
         { status: 400 }
       );
     }
 
-    const { data, error} = await supabase
+    // Check if user already reacted with this emoji
+    const { data: existing } = await supabase
+      .from('reactions')
+      .select('id')
+      .eq('message_id', messageId)
+      .eq('reaction_type', reactionType || '👍')
+      .eq('user_hash', userHash)
+      .single();
+
+    if (existing) {
+      return NextResponse.json(
+        { error: 'User already reacted with this emoji' },
+        { status: 400 }
+      );
+    }
+
+    const { data, error } = await supabase
       .from('reactions')
       .insert({
         message_id: messageId,
-        reaction_type: reactionType || 'thumbs_up',
+        reaction_type: reactionType || '👍',
+        user_hash: userHash,
       })
       .select()
       .single();
@@ -41,7 +58,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET /api/reactions?messageId=xxx - Get reaction count for a message
+// GET /api/reactions?messageId=xxx&userHash=xxx - Get reactions for a message
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
@@ -54,9 +71,9 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const { data, error, count } = await supabase
+    const { data, error } = await supabase
       .from('reactions')
-      .select('*', { count: 'exact' })
+      .select('*')
       .eq('message_id', messageId);
 
     if (error) {
@@ -67,9 +84,47 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({ data, count }, { status: 200 });
+    return NextResponse.json({ data }, { status: 200 });
   } catch (error) {
     console.error('Error in GET /api/reactions:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+// DELETE /api/reactions - Remove a reaction
+export async function DELETE(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { messageId, emoji, userHash } = body;
+
+    if (!messageId || !emoji || !userHash) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+
+    const { error } = await supabase
+      .from('reactions')
+      .delete()
+      .eq('message_id', messageId)
+      .eq('reaction_type', emoji)
+      .eq('user_hash', userHash);
+
+    if (error) {
+      console.error('Error deleting reaction:', error);
+      return NextResponse.json(
+        { error: 'Failed to delete reaction' },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error) {
+    console.error('Error in DELETE /api/reactions:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS messages (
   creator_id UUID NOT NULL REFERENCES creators(id) ON DELETE CASCADE,
   message TEXT NOT NULL,
   tag TEXT NOT NULL CHECK (tag IN ('question', 'feedback', 'confession')),
+  product_category TEXT CHECK (product_category IN ('main_product', 'service', 'feature_request', 'bug_report', 'other')),
   reviewed BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -33,7 +34,8 @@ CREATE TABLE IF NOT EXISTS replies (
 CREATE TABLE IF NOT EXISTS reactions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   message_id UUID NOT NULL REFERENCES messages(id) ON DELETE CASCADE,
-  reaction_type TEXT DEFAULT 'thumbs_up',
+  reaction_type TEXT DEFAULT '👍',
+  user_hash TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -42,6 +44,7 @@ CREATE INDEX IF NOT EXISTS idx_messages_creator_id ON messages(creator_id);
 CREATE INDEX IF NOT EXISTS idx_messages_created_at ON messages(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_messages_reviewed ON messages(reviewed);
 CREATE INDEX IF NOT EXISTS idx_messages_tag ON messages(tag);
+CREATE INDEX IF NOT EXISTS idx_messages_product_category ON messages(product_category);
 CREATE INDEX IF NOT EXISTS idx_creators_feedback_link ON creators(feedback_link);
 CREATE INDEX IF NOT EXISTS idx_replies_message_id ON replies(message_id);
 CREATE INDEX IF NOT EXISTS idx_replies_is_public ON replies(is_public);

@@ -1,135 +1,147 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { Typography, Button } from '@whop/frosted-ui';
 import Navbar from '@/components/Navbar';
 
+// This page is creator-only - part of the /pulse/ dashboard routes
+// In production, add proper authentication middleware to protect these routes
 export default function SettingsPage() {
+  const [origin, setOrigin] = useState('');
+
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#0A0A0A]">
       <Navbar />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">Settings</h1>
-        <p className="text-gray-600 mb-8">Configure your Pulse app integrations and preferences</p>
+      <div className="max-w-4xl mx-auto px-6 py-10">
+        {/* Header */}
+        <div className="mb-10">
+          <Typography as="h1" variant="display-sm" className="text-white mb-3 font-bold">
+            Settings
+          </Typography>
+          <Typography as="p" variant="body" className="text-white text-lg">
+            Configure your app integrations and preferences
+          </Typography>
+        </div>
 
         <div className="space-y-6">
-          {/* Whop Integration Section */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          {/* Whop Integration */}
+          <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6">
+            <Typography as="h2" variant="title-sm" className="text-white mb-2 font-semibold">
               Whop Integration
-            </h2>
-            <p className="text-gray-600 mb-4">
+            </Typography>
+            <Typography as="p" variant="body-sm" className="text-white mb-5">
               Connect your Whop account to enable advanced features
-            </p>
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-              <p className="text-sm text-gray-500 italic">
-                {/* TODO: Connect Whop MCP for user authentication */}
+            </Typography>
+            <div className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-5">
+              <Typography as="p" variant="body-sm" className="text-white/60 italic">
                 Coming soon: Authenticate with Whop to access user data and send direct messages
-              </p>
+              </Typography>
             </div>
           </div>
 
-          {/* AI Insights Section */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          {/* AI Insights */}
+          <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6">
+            <Typography as="h2" variant="title-sm" className="text-white mb-2 font-semibold">
               AI Insights
-            </h2>
-            <p className="text-gray-600 mb-4">
+            </Typography>
+            <Typography as="p" variant="body-sm" className="text-white mb-5">
               Get AI-powered summaries and insights from your feedback
-            </p>
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-              <p className="text-sm text-gray-500 italic">
-                {/* TODO: Add AI summary generation endpoint */}
+            </Typography>
+            <div className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-5">
+              <Typography as="p" variant="body-sm" className="text-white/60 italic">
                 Coming soon: Automatic feedback analysis and sentiment trends
-              </p>
+              </Typography>
             </div>
           </div>
 
-          {/* Weekly Reports Section */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          {/* Weekly Reports */}
+          <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6">
+            <Typography as="h2" variant="title-sm" className="text-white mb-2 font-semibold">
               Weekly Reports
-            </h2>
-            <p className="text-gray-600 mb-4">
+            </Typography>
+            <Typography as="p" variant="body-sm" className="text-white mb-5">
               Receive automated weekly summaries via Whop messages
-            </p>
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-              <p className="text-sm text-gray-500 italic">
-                {/* TODO: Send weekly insights to creator */}
+            </Typography>
+            <div className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-5">
+              <Typography as="p" variant="body-sm" className="text-white/60 italic">
                 Coming soon: Automated weekly feedback reports delivered to your Whop inbox
-              </p>
+              </Typography>
             </div>
           </div>
 
-          {/* Notification Preferences */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          {/* Notifications */}
+          <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6">
+            <Typography as="h2" variant="title-sm" className="text-white mb-2 font-semibold">
               Notification Preferences
-            </h2>
-            <p className="text-gray-600 mb-4">
+            </Typography>
+            <Typography as="p" variant="body-sm" className="text-white mb-5">
               Manage how and when you receive feedback notifications
-            </p>
-            <div className="space-y-3">
-              <label className="flex items-center gap-3">
+            </Typography>
+            <div className="space-y-4">
+              <label className="flex items-center gap-3 opacity-50 cursor-not-allowed">
                 <input
                   type="checkbox"
                   disabled
-                  className="w-4 h-4 text-accent-9 border-gray-300 rounded focus:ring-accent-9 disabled:opacity-50"
+                  className="w-5 h-5 text-blue-600 bg-white/10 border-white/20 rounded focus:ring-blue-500"
                 />
-                <span className="text-sm text-gray-700">
+                <Typography as="span" variant="body" className="text-white">
                   Notify me when new feedback is received (Coming soon)
-                </span>
+                </Typography>
               </label>
-              <label className="flex items-center gap-3">
+              <label className="flex items-center gap-3 opacity-50 cursor-not-allowed">
                 <input
                   type="checkbox"
                   disabled
-                  className="w-4 h-4 text-accent-9 border-gray-300 rounded focus:ring-accent-9 disabled:opacity-50"
+                  className="w-5 h-5 text-blue-600 bg-white/10 border-white/20 rounded focus:ring-blue-500"
                 />
-                <span className="text-sm text-gray-700">
+                <Typography as="span" variant="body" className="text-white">
                   Send weekly summary emails (Coming soon)
-                </span>
+                </Typography>
               </label>
-              <label className="flex items-center gap-3">
+              <label className="flex items-center gap-3 opacity-50 cursor-not-allowed">
                 <input
                   type="checkbox"
                   disabled
-                  className="w-4 h-4 text-accent-9 border-gray-300 rounded focus:ring-accent-9 disabled:opacity-50"
+                  className="w-5 h-5 text-blue-600 bg-white/10 border-white/20 rounded focus:ring-blue-500"
                 />
-                <span className="text-sm text-gray-700">
+                <Typography as="span" variant="body" className="text-white">
                   Alert me about negative feedback (Coming soon)
-                </span>
+                </Typography>
               </label>
             </div>
           </div>
 
           {/* Profile Settings */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6">
+            <Typography as="h2" variant="title-sm" className="text-white mb-2 font-semibold">
               Profile Settings
-            </h2>
-            <p className="text-gray-600 mb-4">
+            </Typography>
+            <Typography as="p" variant="body-sm" className="text-white mb-5">
               Customize your feedback link and profile
-            </p>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Feedback Link Slug
-                </label>
-                <div className="flex gap-3">
-                  <span className="flex items-center px-4 py-2 bg-gray-100 text-gray-600 rounded-lg border border-gray-300">
-                    {typeof window !== 'undefined' ? window.location.origin : ''}/p/
-                  </span>
-                  <input
-                    type="text"
-                    disabled
-                    defaultValue="testcreator"
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:bg-gray-50"
-                  />
-                </div>
-                <p className="text-xs text-gray-500 mt-1">
-                  Custom slugs coming soon
-                </p>
+            </Typography>
+            <div>
+              <Typography as="label" variant="body-sm" className="text-white mb-3 block font-semibold">
+                Feedback Link Slug
+              </Typography>
+              <div className="flex gap-3 mb-3">
+                <span className="flex items-center px-5 py-3 bg-white/[0.02] text-white/60 rounded-xl border border-white/[0.05] text-base">
+                  {origin}/p/
+                </span>
+                <input
+                  type="text"
+                  disabled
+                  defaultValue="testcreator"
+                  className="flex-1 px-5 py-3 bg-white/[0.02] border border-white/[0.05] text-white rounded-xl disabled:opacity-50 text-base"
+                />
               </div>
+              <Typography as="p" variant="body-sm" className="text-white/60">
+                Custom slugs coming soon
+              </Typography>
             </div>
           </div>
         </div>
@@ -137,4 +149,3 @@ export default function SettingsPage() {
     </div>
   );
 }
-

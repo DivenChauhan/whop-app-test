@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-// GET /api/feed?creatorId=xxx - Get public feed (messages with public replies and reaction counts)
+// GET /api/feed?creatorId=xxx&tag=xxx - Get public feed (all messages sorted by reactions)
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const creatorId = searchParams.get('creatorId');
+    const tag = searchParams.get('tag');
 
     if (!creatorId) {
       return NextResponse.json(
@@ -14,16 +15,23 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Get messages with public replies
-    const { data: messages, error: messagesError } = await supabase
+    // Build query for all messages (replies will be filtered client-side)
+    let query = supabase
       .from('messages')
       .select(`
         *,
-        replies!inner(*)
+        replies(*)
       `)
-      .eq('creator_id', creatorId)
-      .eq('replies.is_public', true)
-      .order('created_at', { ascending: false });
+      .eq('creator_id', creatorId);
+
+    // Apply tag filter if provided
+    if (tag && tag !== 'all') {
+      query = query.eq('tag', tag);
+    }
+
+    query = query.order('created_at', { ascending: false });
+
+    const { data: messages, error: messagesError } = await query;
 
     if (messagesError) {
       console.error('Error fetching messages:', messagesError);
@@ -33,7 +41,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Get reaction counts for each message
+    // Filter replies to only public ones and get reaction counts
     const messagesWithReactions = await Promise.all(
       (messages || []).map(async (message: any) => {
         const { count } = await supabase
@@ -41,14 +49,26 @@ export async function GET(request: NextRequest) {
           .select('*', { count: 'exact', head: true })
           .eq('message_id', message.id);
 
+        // Filter to only show public replies in the feed
+        const publicReplies = (message.replies || []).filter((reply: any) => reply.is_public === true);
+
         return {
           ...message,
+          replies: publicReplies,
           reaction_count: count || 0,
         };
       })
     );
 
-    return NextResponse.json({ data: messagesWithReactions }, { status: 200 });
+    // Sort by reaction count (hottest first), then by created_at
+    const sortedMessages = messagesWithReactions.sort((a, b) => {
+      if (b.reaction_count !== a.reaction_count) {
+        return b.reaction_count - a.reaction_count; // Higher reactions first
+      }
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime(); // Newer first if same reactions
+    });
+
+    return NextResponse.json({ data: sortedMessages }, { status: 200 });
   } catch (error) {
     console.error('Error in GET /api/feed:', error);
     return NextResponse.json(

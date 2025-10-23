@@ -2,6 +2,8 @@
 
 import { Message, Reply } from '@/lib/supabase';
 import { useState } from 'react';
+import { Button, Typography } from '@whop/frosted-ui';
+import EmojiReactions from './EmojiReactions';
 
 interface MessageCardProps {
   message: Message & { reply?: Reply[] };
@@ -21,7 +23,10 @@ export default function MessageCard({
   const [isLoading, setIsLoading] = useState(false);
   const [showReplyModal, setShowReplyModal] = useState(false);
   const [replyText, setReplyText] = useState('');
-  const [replyIsPublic, setReplyIsPublic] = useState(false);
+  const [makePrivate, setMakePrivate] = useState(false); // FIXED: Changed to makePrivate - when unchecked = public
+  const [reactionCount, setReactionCount] = useState(0);
+
+  const isHot = reactionCount >= 5;
 
   const handleToggleReviewed = async () => {
     if (!onMarkReviewed) return;
@@ -48,9 +53,9 @@ export default function MessageCard({
     if (!onReply || !replyText.trim()) return;
     setIsLoading(true);
     try {
-      await onReply(message.id, replyText.trim(), replyIsPublic);
+      await onReply(message.id, replyText.trim(), !makePrivate); // FIXED: Inverted logic - unchecked = public
       setReplyText('');
-      setReplyIsPublic(false);
+      setMakePrivate(false);
       setShowReplyModal(false);
     } finally {
       setIsLoading(false);
@@ -67,170 +72,221 @@ export default function MessageCard({
     }
   };
 
-  const getTagIcon = () => {
+  const getTagLabel = () => {
     switch (message.tag) {
-      case 'question':
-        return '❓';
-      case 'feedback':
-        return '💬';
-      case 'confession':
-        return '🤫';
-      default:
-        return '📝';
+      case 'question': return '❓ Questions';
+      case 'feedback': return '💬 Feedback';
+      case 'confession': return '🤫 Confessions';
+      default: return '📝 Other';
     }
   };
 
-  const getTagColor = () => {
-    switch (message.tag) {
-      case 'question':
-        return 'text-blue-600 bg-blue-50';
-      case 'feedback':
-        return 'text-green-600 bg-green-50';
-      case 'confession':
-        return 'text-purple-600 bg-purple-50';
-      default:
-        return 'text-gray-600 bg-gray-50';
-    }
+  const getProductCategoryLabel = () => {
+    if (!message.product_category) return null;
+    const labels = {
+      main_product: '🚀 Product',
+      service: '⚡ Service',
+      feature_request: '🎁 Feature',
+      bug_report: '🐛 Bug',
+      other: '📝 Other',
+    };
+    return labels[message.product_category];
   };
 
   const reply = Array.isArray(message.reply) && message.reply.length > 0 ? message.reply[0] : null;
+  const messageAge = Date.now() - new Date(message.created_at).getTime();
+  const isNew = messageAge < 24 * 60 * 60 * 1000;
 
   return (
-    <div className={`bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow ${message.reviewed ? 'opacity-60' : ''}`}>
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <span className={`text-2xl p-2 rounded-lg ${getTagColor()}`}>
-            {getTagIcon()}
+    <div className={`bg-white/[0.03] rounded-2xl p-6 transition-all hover:bg-white/[0.05] ${
+      message.reviewed ? 'opacity-60' : ''
+    } ${isHot ? 'bg-gradient-to-br from-white/[0.03] to-orange-500/5' : ''}`}>
+      
+      {/* Header */}
+      <div className="flex items-start justify-between mb-6">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="px-3 py-1 bg-white/[0.08] text-white text-base rounded-md border border-white/[0.1]">
+            {getTagLabel()}
           </span>
-          <div>
-            <p className="text-sm font-medium text-gray-700 capitalize">{message.tag}</p>
-            <p className="text-sm text-gray-500">
-              {new Date(message.created_at).toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </p>
-            {message.reviewed && (
-              <span className="inline-block px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded mt-1">
-                Reviewed
-              </span>
-            )}
-          </div>
+          
+          {message.product_category && (
+            <span className="px-3 py-1 bg-white/[0.08] text-white text-sm rounded-md border border-white/[0.1]">
+              {getProductCategoryLabel()}
+            </span>
+          )}
+          
+                {isHot && (
+                  <span className="px-3 py-1 bg-orange-500/30 text-white text-sm font-semibold rounded-md border border-orange-500/50">
+                    🔥 Hot
+                  </span>
+                )}
+                
+                {isNew && (
+                  <span className="px-3 py-1 bg-purple-500/30 text-white text-sm font-semibold rounded-md border border-purple-500/50">
+                    ✨ New
+                  </span>
+                )}
         </div>
+        
+        <Typography as="span" variant="body-sm" className="text-white/60 whitespace-nowrap ml-3">
+          {new Date(message.created_at).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+        </Typography>
       </div>
 
-      <p className="text-gray-800 mb-4 whitespace-pre-wrap">{message.message}</p>
+      {/* Message Content */}
+      <Typography as="p" variant="body" className="text-white mb-6 whitespace-pre-wrap leading-relaxed text-lg">
+        {message.message}
+      </Typography>
 
       {/* Reply Display */}
       {reply && (
-        <div className="mt-4 p-4 bg-gray-50 rounded-lg border-l-4 border-accent-9">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-sm font-medium text-gray-700">Your Reply</p>
+        <div className="mb-6 p-5 bg-blue-500/10 rounded-xl border border-blue-500/30">
+          <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <span className={`text-xs px-2 py-1 rounded ${reply.is_public ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-700'}`}>
+              <Typography as="span" variant="body-sm" className="text-white font-semibold">
+                Your Reply
+              </Typography>
+              <span className={`px-3 py-1 text-sm rounded-md border ${
+                reply.is_public 
+                  ? 'bg-white/[0.08] text-white border-white/[0.1]' 
+                  : 'bg-white/[0.08] text-white border-white/[0.1]'
+              }`}>
                 {reply.is_public ? '👁️ Public' : '🔒 Private'}
               </span>
-              {onToggleReplyVisibility && (
-                <button
-                  onClick={() => handleToggleVisibility(reply.id, reply.is_public)}
-                  disabled={isLoading}
-                  className="text-xs px-3 py-1 bg-accent-9 text-white rounded hover:bg-accent-10 transition-colors disabled:opacity-50"
-                >
-                  Toggle
-                </button>
-              )}
             </div>
+            {onToggleReplyVisibility && (
+              <Button
+                onClick={() => handleToggleVisibility(reply.id, reply.is_public)}
+                disabled={isLoading}
+                size="sm"
+                variant="secondary"
+                className="text-white"
+              >
+                {reply.is_public ? 'Make Private' : 'Make Public'}
+              </Button>
+            )}
           </div>
-          <p className="text-gray-700">{reply.reply_text}</p>
+          <Typography as="p" variant="body" className="text-white">
+            {reply.reply_text}
+          </Typography>
         </div>
       )}
 
-      <div className="flex gap-2 mt-4">
-        {onReply && !reply && (
-          <button
-            onClick={() => setShowReplyModal(true)}
-            disabled={isLoading}
-            className="px-4 py-2 text-sm font-medium bg-accent-9 text-white rounded-lg hover:bg-accent-10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Reply
-          </button>
-        )}
-        {onMarkReviewed && (
-          <button
-            onClick={handleToggleReviewed}
-            disabled={isLoading}
-            className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-              message.reviewed
-                ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                : 'bg-green-500 text-white hover:bg-green-600'
-            } disabled:opacity-50 disabled:cursor-not-allowed`}
-          >
-            {isLoading ? 'Loading...' : message.reviewed ? 'Mark as Unreviewed' : 'Mark as Reviewed'}
-          </button>
-        )}
+      {/* Reactions */}
+      <div className="mb-6 pt-6 border-t border-white/[0.08]">
+        <Typography as="p" variant="body-sm" className="text-white mb-3 font-semibold">
+          Reactions
+        </Typography>
+        <EmojiReactions 
+          messageId={message.id}
+          onReactionUpdate={(count) => setReactionCount(count)}
+        />
+      </div>
+
+      {/* Actions */}
+      <div className="flex flex-wrap gap-3 items-center">
+        <div className="flex gap-2">
+          {onReply && !reply && (
+            <Button
+              onClick={() => setShowReplyModal(true)}
+              disabled={isLoading}
+              size="md"
+              variant="primary"
+              className="text-white"
+            >
+              Reply
+            </Button>
+          )}
+          {onMarkReviewed && (
+            <Button
+              onClick={handleToggleReviewed}
+              disabled={isLoading}
+              size="md"
+              variant={message.reviewed ? 'secondary' : 'primary'}
+              className="text-white"
+            >
+              {isLoading ? 'Loading...' : message.reviewed ? 'Unmark Reviewed' : 'Mark Reviewed'}
+            </Button>
+          )}
+        </div>
         {onDelete && (
-          <button
-            onClick={handleDelete}
-            disabled={isLoading}
-            className="px-4 py-2 text-sm font-medium text-red-700 bg-red-100 rounded-lg hover:bg-red-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Delete
-          </button>
+          <div className="ml-auto">
+            <Button
+              onClick={handleDelete}
+              disabled={isLoading}
+              size="md"
+              variant="danger"
+              className="text-white"
+            >
+              🗑️ Delete
+            </Button>
+          </div>
         )}
       </div>
 
       {/* Reply Modal */}
       {showReplyModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-lg w-full p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Reply to Message</h3>
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
+          <div className="bg-[#0A0A0A] border border-white/[0.08] rounded-2xl max-w-2xl w-full p-8">
+            <Typography as="h3" variant="title" className="text-white mb-6 font-bold">
+              Reply to Message
+            </Typography>
             
-            <div className="mb-4 p-3 bg-gray-50 rounded">
-              <p className="text-sm text-gray-600">{message.message}</p>
+            <div className="mb-5 p-4 bg-white/[0.03] rounded-xl border border-white/[0.08]">
+              <Typography as="p" variant="body" className="text-white">
+                {message.message}
+              </Typography>
             </div>
 
             <textarea
               value={replyText}
               onChange={(e) => setReplyText(e.target.value)}
               placeholder="Type your reply..."
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent-9 focus:border-transparent resize-none mb-4"
-              rows={4}
+              className="w-full px-5 py-4 bg-white/[0.03] border border-white/[0.08] text-white text-base placeholder:text-white/40 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none mb-5"
+              rows={5}
               disabled={isLoading}
             />
 
-            <label className="flex items-center gap-2 mb-4">
+            <label className="flex items-center gap-3 mb-6 cursor-pointer group p-3 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.05] transition-all">
               <input
                 type="checkbox"
-                checked={replyIsPublic}
-                onChange={(e) => setReplyIsPublic(e.target.checked)}
+                checked={makePrivate}
+                onChange={(e) => setMakePrivate(e.target.checked)}
                 disabled={isLoading}
-                className="w-4 h-4 text-accent-9 border-gray-300 rounded focus:ring-accent-9"
+                className="w-5 h-5 text-blue-600 bg-white/20 border-white/40 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
               />
-              <span className="text-sm text-gray-700">Make reply public (visible in feed)</span>
+              <Typography as="span" variant="body" className="text-white font-medium">
+                Make reply private (only you can see it)
+              </Typography>
             </label>
 
             <div className="flex gap-3">
-              <button
+              <Button
                 onClick={handleSubmitReply}
                 disabled={isLoading || !replyText.trim()}
-                className="flex-1 px-4 py-2 bg-accent-9 text-white font-medium rounded-lg hover:bg-accent-10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                size="lg"
+                variant="primary"
+                className="flex-1"
               >
-                {isLoading ? 'Submitting...' : 'Submit Reply'}
-              </button>
-              <button
+                {isLoading ? 'Sending...' : 'Send Reply'}
+              </Button>
+              <Button
                 onClick={() => {
                   setShowReplyModal(false);
                   setReplyText('');
-                  setReplyIsPublic(false);
+                  setMakePrivate(false);
                 }}
                 disabled={isLoading}
-                className="px-4 py-2 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50"
+                size="lg"
+                variant="secondary"
               >
                 Cancel
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -238,4 +294,3 @@ export default function MessageCard({
     </div>
   );
 }
-

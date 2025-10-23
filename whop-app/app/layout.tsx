@@ -1,4 +1,5 @@
 import { WhopApp } from "@whop/react/components";
+import { FrostedUIProvider } from "@/components/FrostedUIProvider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -27,8 +28,13 @@ export default function RootLayout({
 		<html lang="en" suppressHydrationWarning>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+				suppressHydrationWarning
 			>
-				<WhopApp>{children}</WhopApp>
+				<WhopApp>
+					<FrostedUIProvider>
+						{children}
+					</FrostedUIProvider>
+				</WhopApp>
 			</body>
 		</html>
 	);

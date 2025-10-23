@@ -14,12 +14,14 @@ export const supabaseAdmin = createClient(
 
 // Database types
 export type MessageTag = 'question' | 'feedback' | 'confession';
+export type ProductCategory = 'main_product' | 'service' | 'feature_request' | 'bug_report' | 'other';
 
 export interface Message {
   id: string;
   creator_id: string;
   message: string;
   tag: MessageTag;
+  product_category?: ProductCategory;
   created_at: string;
   reviewed: boolean;
 }
@@ -36,6 +38,7 @@ export interface Reaction {
   id: string;
   message_id: string;
   reaction_type: string;
+  user_hash: string;
   created_at: string;
 }
 

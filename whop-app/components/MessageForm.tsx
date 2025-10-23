@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { MessageTag } from '@/lib/supabase';
+import { MessageTag, ProductCategory } from '@/lib/supabase';
 
 interface MessageFormProps {
   creatorId: string;
@@ -12,6 +12,7 @@ interface MessageFormProps {
 export default function MessageForm({ creatorId, creatorName, onSuccess }: MessageFormProps) {
   const [message, setMessage] = useState('');
   const [tag, setTag] = useState<MessageTag>('feedback');
+  const [productCategory, setProductCategory] = useState<ProductCategory | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -38,6 +39,7 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
           creatorId,
           message: message.trim(),
           tag,
+          productCategory,
         }),
       });
 
@@ -48,6 +50,7 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
       setSuccess(true);
       setMessage('');
       setTag('feedback');
+      setProductCategory(undefined);
 
       if (onSuccess) {
         onSuccess();
@@ -131,6 +134,74 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               🤫 Confession
+            </button>
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-3">
+            Product Category <span className="text-gray-400 text-xs">(Optional)</span>
+          </label>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => setProductCategory(productCategory === 'main_product' ? undefined : 'main_product')}
+              disabled={isSubmitting}
+              className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
+                productCategory === 'main_product'
+                  ? 'bg-purple-100 text-purple-700 ring-2 ring-purple-500'
+                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+              } disabled:opacity-50`}
+            >
+              🚀 Main Product
+            </button>
+            <button
+              type="button"
+              onClick={() => setProductCategory(productCategory === 'service' ? undefined : 'service')}
+              disabled={isSubmitting}
+              className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
+                productCategory === 'service'
+                  ? 'bg-yellow-100 text-yellow-700 ring-2 ring-yellow-500'
+                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+              } disabled:opacity-50`}
+            >
+              ⚡ Service
+            </button>
+            <button
+              type="button"
+              onClick={() => setProductCategory(productCategory === 'feature_request' ? undefined : 'feature_request')}
+              disabled={isSubmitting}
+              className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
+                productCategory === 'feature_request'
+                  ? 'bg-green-100 text-green-700 ring-2 ring-green-500'
+                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+              } disabled:opacity-50`}
+            >
+              🎁 Feature Request
+            </button>
+            <button
+              type="button"
+              onClick={() => setProductCategory(productCategory === 'bug_report' ? undefined : 'bug_report')}
+              disabled={isSubmitting}
+              className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
+                productCategory === 'bug_report'
+                  ? 'bg-red-100 text-red-700 ring-2 ring-red-500'
+                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+              } disabled:opacity-50`}
+            >
+              🐛 Bug Report
+            </button>
+            <button
+              type="button"
+              onClick={() => setProductCategory(productCategory === 'other' ? undefined : 'other')}
+              disabled={isSubmitting}
+              className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
+                productCategory === 'other'
+                  ? 'bg-gray-200 text-gray-700 ring-2 ring-gray-500'
+                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+              } disabled:opacity-50`}
+            >
+              📝 Other
             </button>
           </div>
         </div>

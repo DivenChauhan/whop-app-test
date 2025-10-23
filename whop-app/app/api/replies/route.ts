@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       .insert({
         message_id: messageId,
         reply_text: replyText,
-        is_public: isPublic ?? false,
+        is_public: isPublic ?? true, // Default to public (true) if not specified
       })
       .select()
       .single();

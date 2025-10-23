@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { creatorId, message, tag } = body;
+    const { creatorId, message, tag, productCategory } = body;
 
     if (!creatorId || !message || !tag) {
       return NextResponse.json(
@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
         creator_id: creatorId,
         message,
         tag,
+        product_category: productCategory || null,
         reviewed: false,
       })
       .select()
@@ -43,13 +44,14 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET /api/feedback?creatorId=xxx&reviewed=true/false&tag=xxx
+// GET /api/feedback?creatorId=xxx&reviewed=true/false&tag=xxx&productCategory=xxx
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const creatorId = searchParams.get('creatorId');
     const reviewedFilter = searchParams.get('reviewed');
     const tagFilter = searchParams.get('tag');
+    const productCategoryFilter = searchParams.get('productCategory');
 
     if (!creatorId) {
       return NextResponse.json(
@@ -73,6 +75,10 @@ export async function GET(request: NextRequest) {
 
     if (tagFilter) {
       query = query.eq('tag', tagFilter);
+    }
+
+    if (productCategoryFilter) {
+      query = query.eq('product_category', productCategoryFilter);
     }
 
     const { data, error } = await query;

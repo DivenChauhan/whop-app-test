@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { Message, Reply, Reaction } from '@/lib/supabase';
+import { Message, Reply } from '@/lib/supabase';
+import { Typography } from '@whop/frosted-ui';
 import Navbar from '@/components/Navbar';
+import EmojiReactions from '@/components/EmojiReactions';
+import MessageModal from '@/components/MessageModal';
 
-// TODO: Connect Whop MCP for user authentication
 const CREATOR_ID = '00000000-0000-0000-0000-000000000001';
-const CREATOR_NAME = 'Test Creator'; // Should come from Whop user data
 
 interface MessageWithRelations extends Message {
   replies: Reply[];
@@ -17,145 +18,101 @@ export default function PublicFeedPage() {
   const [messages, setMessages] = useState<MessageWithRelations[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'question' | 'feedback' | 'confession'>('all');
-  const [reactingMessageId, setReactingMessageId] = useState<string | null>(null);
+  const [selectedMessage, setSelectedMessage] = useState<MessageWithRelations | null>(null);
 
-  const fetchFeed = useCallback(async () => {
+  const fetchMessages = useCallback(async () => {
     try {
       setIsLoading(true);
-      const params = new URLSearchParams({
-        creatorId: CREATOR_ID,
-      });
+      const params = new URLSearchParams({ creatorId: CREATOR_ID });
+      
+      if (filter !== 'all') params.append('tag', filter);
 
       const response = await fetch(`/api/feed?${params.toString()}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch feed');
-      }
+      if (!response.ok) throw new Error('Failed to fetch messages');
 
       const { data } = await response.json();
       setMessages(data || []);
     } catch (error) {
-      console.error('Error fetching feed:', error);
+      console.error('Error fetching messages:', error);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [filter]);
 
   useEffect(() => {
-    fetchFeed();
-  }, [fetchFeed]);
+    fetchMessages();
+  }, [fetchMessages]);
 
-  const handleReaction = async (messageId: string) => {
-    setReactingMessageId(messageId);
-    try {
-      const response = await fetch('/api/reactions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messageId,
-          reactionType: 'thumbs_up',
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to add reaction');
-      }
-
-      // Refresh feed to show updated reaction count
-      await fetchFeed();
-    } catch (error) {
-      console.error('Error adding reaction:', error);
-      alert('Failed to add reaction');
-    } finally {
-      setReactingMessageId(null);
-    }
-  };
-
-  const getTagIcon = (tag: string) => {
+  const getTagLabel = (tag: string) => {
     switch (tag) {
-      case 'question':
-        return '❓';
-      case 'feedback':
-        return '💬';
-      case 'confession':
-        return '🤫';
-      default:
-        return '📝';
+      case 'question': return '❓ Questions';
+      case 'feedback': return '💬 Feedback';
+      case 'confession': return '🤫 Confessions';
+      default: return '📝 Other';
     }
   };
 
-  const getTagColor = (tag: string) => {
-    switch (tag) {
-      case 'question':
-        return 'text-blue-600 bg-blue-50';
-      case 'feedback':
-        return 'text-green-600 bg-green-50';
-      case 'confession':
-        return 'text-purple-600 bg-purple-50';
-      default:
-        return 'text-gray-600 bg-gray-50';
-    }
-  };
-
-  const filteredMessages = filter === 'all' 
-    ? messages 
-    : messages.filter(m => m.tag === filter);
+  // Separate hot posts (top 5 with most reactions) from regular messages
+  const hotPosts = messages.filter(m => m.reaction_count >= 5).slice(0, 5);
+  const regularMessages = messages.filter(m => !hotPosts.includes(m));
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#0A0A0A]">
       <Navbar />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-6 py-10">
         {/* Header */}
-        <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            {CREATOR_NAME}'s Public Feed
-          </h1>
-          <p className="text-gray-600">
-            See what the community is sharing and creator responses
-          </p>
+        <div className="mb-10">
+          <Typography as="h1" variant="display-sm" className="text-white mb-3 font-bold">
+            Community Feed
+          </Typography>
+          <Typography as="p" variant="body" className="text-white text-lg">
+            React to messages and help prioritize what gets answered
+          </Typography>
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6">
-          <div className="flex flex-wrap gap-2 justify-center">
+        <div className="bg-white/[0.03] rounded-2xl p-6 mb-8">
+          <Typography as="p" variant="body-sm" className="text-white mb-4 font-medium">
+            Filter by type
+          </Typography>
+          <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setFilter('all')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              className={`px-5 py-2.5 rounded-xl font-medium transition-all text-base ${
                 filter === 'all'
-                  ? 'bg-accent-9 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
+                  : 'bg-white/[0.05] text-white hover:bg-white/[0.1] border border-white/[0.08]'
               }`}
             >
               All
             </button>
             <button
               onClick={() => setFilter('question')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              className={`px-5 py-2.5 rounded-xl font-medium transition-all text-base ${
                 filter === 'question'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
+                  : 'bg-white/[0.05] text-white hover:bg-white/[0.1] border border-white/[0.08]'
               }`}
             >
               ❓ Questions
             </button>
             <button
               onClick={() => setFilter('feedback')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              className={`px-5 py-2.5 rounded-xl font-medium transition-all text-base ${
                 filter === 'feedback'
-                  ? 'bg-green-500 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
+                  : 'bg-white/[0.05] text-white hover:bg-white/[0.1] border border-white/[0.08]'
               }`}
             >
               💬 Feedback
             </button>
             <button
               onClick={() => setFilter('confession')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              className={`px-5 py-2.5 rounded-xl font-medium transition-all text-base ${
                 filter === 'confession'
-                  ? 'bg-purple-500 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
+                  : 'bg-white/[0.05] text-white hover:bg-white/[0.1] border border-white/[0.08]'
               }`}
             >
               🤫 Confessions
@@ -163,99 +120,180 @@ export default function PublicFeedPage() {
           </div>
         </div>
 
-        {/* Feed */}
         {isLoading ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500">Loading feed...</p>
+          <div className="bg-white/[0.03] rounded-2xl p-16 text-center">
+            <Typography as="p" variant="body" className="text-white">
+              Loading messages...
+            </Typography>
           </div>
-        ) : filteredMessages.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-md p-12 text-center">
-            <p className="text-gray-500 text-lg mb-2">No messages yet</p>
-            <p className="text-gray-400 text-sm">
-              Be the first to share your thoughts!
-            </p>
+        ) : messages.length === 0 ? (
+          <div className="bg-white/[0.03] rounded-2xl p-16 text-center">
+            <Typography as="p" variant="title-sm" className="text-white mb-2">
+              No messages yet
+            </Typography>
+            <Typography as="p" variant="body-sm" className="text-white">
+              Be the first to leave a message!
+            </Typography>
           </div>
         ) : (
-          <div className="space-y-6">
-            {filteredMessages.map((message) => (
-              <div
-                key={message.id}
-                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
-              >
-                {/* Message Header */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <span className={`text-2xl p-2 rounded-lg ${getTagColor(message.tag)}`}>
-                      {getTagIcon(message.tag)}
-                    </span>
-                    <div>
-                      <p className="text-sm font-medium text-gray-700 capitalize">
-                        {message.tag}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        {new Date(message.created_at).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })}
-                      </p>
-                    </div>
-                  </div>
+          <>
+            {/* Hot Posts Section */}
+            {hotPosts.length > 0 && (
+              <div className="mb-12">
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="text-3xl">🔥</span>
+                  <Typography as="h2" variant="title" className="text-white font-bold">
+                    Hot Posts
+                  </Typography>
+                  <span className="px-3 py-1 bg-orange-500/20 text-orange-300 text-sm rounded-full border border-orange-500/30">
+                    {hotPosts.length}
+                  </span>
                 </div>
 
-                {/* Message Content */}
-                <p className="text-gray-800 mb-4 whitespace-pre-wrap">{message.message}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                  {hotPosts.map((message) => {
+                    const messageAge = Date.now() - new Date(message.created_at).getTime();
+                    const isNew = messageAge < 24 * 60 * 60 * 1000;
 
-                {/* Public Replies */}
-                {message.replies && message.replies.length > 0 && (
-                  <div className="mt-4 p-4 bg-accent-1 rounded-lg border-l-4 border-accent-9">
-                    <p className="text-sm font-medium text-accent-11 mb-2">
-                      {CREATOR_NAME}'s Reply
-                    </p>
-                    {message.replies.map((reply) => (
-                      <p key={reply.id} className="text-gray-700">
-                        {reply.reply_text}
-                      </p>
-                    ))}
-                  </div>
-                )}
+                    return (
+                      <div
+                        key={message.id}
+                        onClick={() => setSelectedMessage(message)}
+                        className="bg-gradient-to-br from-white/[0.05] to-orange-500/10 rounded-2xl p-6 border border-orange-500/20 hover:border-orange-500/40 transition-all cursor-pointer hover:scale-[1.02]"
+                      >
+                        {/* Large Reaction Count */}
+                        <div className="flex items-start gap-4 mb-4">
+                          <div className="text-6xl font-bold text-orange-400">
+                            {message.reaction_count}
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="text-xl">🔥</span>
+                              <Typography as="span" variant="body-sm" className="text-orange-300 font-semibold">
+                                Hot Post
+                              </Typography>
+                            </div>
+                            {isNew && (
+                              <span className="px-2 py-1 bg-purple-500/30 text-purple-200 text-xs font-semibold rounded-md">
+                                ✨ New
+                              </span>
+                            )}
+                          </div>
+                        </div>
 
-                {/* Reaction Bar */}
-                <div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-gray-500">
-                    <span className="text-lg">👍</span>
-                    <span className="text-sm font-medium">
-                      {message.reaction_count} {message.reaction_count === 1 ? 'reaction' : 'reactions'}
-                    </span>
-                  </div>
-                  <button
-                    onClick={() => handleReaction(message.id)}
-                    disabled={reactingMessageId === message.id}
-                    className="px-4 py-2 text-sm font-medium bg-accent-3 text-accent-11 rounded-lg hover:bg-accent-4 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {reactingMessageId === message.id ? 'Adding...' : '👍 React'}
-                  </button>
+                        {/* Message Preview */}
+                        <Typography as="p" variant="body" className="text-white mb-3 line-clamp-2">
+                          {message.message}
+                        </Typography>
+
+                        {/* Timestamp */}
+                        <Typography as="span" variant="body-sm" className="text-white/50">
+                          {new Date(message.created_at).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </Typography>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
-            ))}
-          </div>
-        )}
+            )}
 
-        {/* Call to Action */}
-        <div className="mt-8 bg-gradient-to-r from-accent-9 to-accent-10 rounded-lg shadow-lg p-8 text-center text-white">
-          <h2 className="text-2xl font-bold mb-2">Have something to share?</h2>
-          <p className="mb-4 text-accent-1">
-            Send an anonymous message to {CREATOR_NAME}
-          </p>
-          <a
-            href={`/p/${CREATOR_ID}`}
-            className="inline-block px-6 py-3 bg-white text-accent-11 font-medium rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            Send Message
-          </a>
-        </div>
+            {/* All Messages Section */}
+            <div>
+              <Typography as="h2" variant="title" className="text-white mb-6 font-bold">
+                All Messages
+              </Typography>
+              <Typography as="p" variant="body-sm" className="text-white/60 mb-6">
+                Manage and reply to your messages
+              </Typography>
+
+              <div className="space-y-5">
+                {regularMessages.map((message) => {
+                  const messageAge = Date.now() - new Date(message.created_at).getTime();
+                  const isNew = messageAge < 24 * 60 * 60 * 1000;
+
+                  return (
+                    <div
+                      key={message.id}
+                      className="bg-white/[0.03] rounded-2xl p-6 transition-all hover:bg-white/[0.05]"
+                    >
+                      {/* Header */}
+                      <div className="flex items-start justify-between mb-6">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="px-3 py-1 bg-white/[0.08] text-white text-base rounded-md border border-white/[0.1]">
+                            {getTagLabel(message.tag)}
+                          </span>
+                          
+                          {isNew && (
+                            <span className="px-3 py-1 bg-purple-500/30 text-white text-sm font-semibold rounded-md border border-purple-500/50">
+                              ✨ New
+                            </span>
+                          )}
+                        </div>
+                        
+                        <Typography as="span" variant="body-sm" className="text-white/60 whitespace-nowrap ml-3">
+                          {new Date(message.created_at).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </Typography>
+                      </div>
+
+                      {/* Message Content */}
+                      <Typography as="p" variant="body" className="text-white mb-6 whitespace-pre-wrap leading-relaxed text-lg">
+                        {message.message}
+                      </Typography>
+
+                      {/* Public Reply */}
+                      {message.replies && message.replies.length > 0 && message.replies.some(r => r.is_public) && (
+                        <div className="mb-6 p-5 bg-blue-500/10 rounded-xl border border-blue-500/30">
+                          <div className="flex items-center gap-2 mb-3">
+                            <Typography as="span" variant="body-sm" className="text-white font-semibold">
+                              Creator's Reply
+                            </Typography>
+                            <span className="px-3 py-1 text-sm rounded-md border bg-white/[0.08] text-white border-white/[0.1]">
+                              👁️ Public
+                            </span>
+                          </div>
+                          <Typography as="p" variant="body" className="text-white">
+                            {message.replies.find(r => r.is_public)?.reply_text}
+                          </Typography>
+                        </div>
+                      )}
+
+                      {/* Reactions */}
+                      <div className="pt-6 border-t border-white/[0.08]">
+                        <Typography as="p" variant="body-sm" className="text-white mb-3 font-semibold">
+                          Reactions
+                        </Typography>
+                        <EmojiReactions messageId={message.id} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </>
+        )}
       </div>
+
+      {/* Message Modal */}
+      {selectedMessage && (
+        <MessageModal
+          message={{
+            ...selectedMessage,
+            reply: selectedMessage.replies
+          }}
+          isOpen={!!selectedMessage}
+          onClose={() => setSelectedMessage(null)}
+        />
+      )}
     </div>
   );
 }
-
