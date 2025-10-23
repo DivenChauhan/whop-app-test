@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { Feedback } from '@/lib/supabase';
-import FeedbackCard from '@/components/FeedbackCard';
+import { Message, Reply } from '@/lib/supabase';
+import MessageCard from '@/components/MessageCard';
 import MetricsCard from '@/components/MetricsCard';
 import Navbar from '@/components/Navbar';
 
@@ -12,9 +12,9 @@ const CREATOR_ID = 'test-creator-id'; // This should come from Whop auth
 const CREATOR_SLUG = 'testcreator'; // This should come from Whop user data
 
 export default function DashboardPage() {
-  const [feedback, setFeedback] = useState<Feedback[]>([]);
+  const [messages, setMessages] = useState<(Message & { reply?: Reply[] })[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'positive' | 'negative' | 'neutral'>('all');
+  const [filter, setFilter] = useState<'all' | 'question' | 'feedback' | 'confession'>('all');
   const [showReviewed, setShowReviewed] = useState(false);
   const [copied, setCopied] = useState(false);
 
