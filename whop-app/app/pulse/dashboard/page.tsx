@@ -18,7 +18,7 @@ export default function DashboardPage() {
   const [showReviewed, setShowReviewed] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const fetchFeedback = useCallback(async () => {
+  const fetchMessages = useCallback(async () => {
     try {
       setIsLoading(true);
       const params = new URLSearchParams({
@@ -26,12 +26,7 @@ export default function DashboardPage() {
       });
 
       if (filter !== 'all') {
-        const sentimentMap = {
-          positive: 'up',
-          negative: 'down',
-          neutral: 'neutral',
-        };
-        params.append('sentiment', sentimentMap[filter]);
+        params.append('tag', filter);
       }
 
       if (!showReviewed) {
@@ -40,21 +35,21 @@ export default function DashboardPage() {
 
       const response = await fetch(`/api/feedback?${params.toString()}`);
       if (!response.ok) {
-        throw new Error('Failed to fetch feedback');
+        throw new Error('Failed to fetch messages');
       }
 
       const { data } = await response.json();
-      setFeedback(data || []);
+      setMessages(data || []);
     } catch (error) {
-      console.error('Error fetching feedback:', error);
+      console.error('Error fetching messages:', error);
     } finally {
       setIsLoading(false);
     }
   }, [filter, showReviewed]);
 
   useEffect(() => {
-    fetchFeedback();
-  }, [fetchFeedback]);
+    fetchMessages();
+  }, [fetchMessages]);
 
   const handleMarkReviewed = async (id: string, reviewed: boolean) => {
     try {
@@ -67,14 +62,14 @@ export default function DashboardPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update feedback');
+        throw new Error('Failed to update message');
       }
 
-      // Refresh feedback list
-      await fetchFeedback();
+      // Refresh messages list
+      await fetchMessages();
     } catch (error) {
-      console.error('Error updating feedback:', error);
-      alert('Failed to update feedback');
+      console.error('Error updating message:', error);
+      alert('Failed to update message');
     }
   };
 
@@ -85,14 +80,62 @@ export default function DashboardPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete feedback');
+        throw new Error('Failed to delete message');
       }
 
-      // Refresh feedback list
-      await fetchFeedback();
+      // Refresh messages list
+      await fetchMessages();
     } catch (error) {
-      console.error('Error deleting feedback:', error);
-      alert('Failed to delete feedback');
+      console.error('Error deleting message:', error);
+      alert('Failed to delete message');
+    }
+  };
+
+  const handleReply = async (messageId: string, replyText: string, isPublic: boolean) => {
+    try {
+      const response = await fetch('/api/replies', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messageId,
+          replyText,
+          isPublic,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create reply');
+      }
+
+      // Refresh messages list to show the new reply
+      await fetchMessages();
+    } catch (error) {
+      console.error('Error creating reply:', error);
+      alert('Failed to create reply');
+    }
+  };
+
+  const handleToggleReplyVisibility = async (replyId: string, isPublic: boolean) => {
+    try {
+      const response = await fetch(`/api/replies/${replyId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ isPublic }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update reply visibility');
+      }
+
+      // Refresh messages list to show updated visibility
+      await fetchMessages();
+    } catch (error) {
+      console.error('Error updating reply visibility:', error);
+      alert('Failed to update reply visibility');
     }
   };
 
@@ -104,13 +147,11 @@ export default function DashboardPage() {
   };
 
   // Calculate metrics
-  const totalFeedback = feedback.length;
-  const reviewedCount = feedback.filter((f) => f.reviewed).length;
-  const positiveCount = feedback.filter((f) => f.sentiment === 'up').length;
-  const negativeCount = feedback.filter((f) => f.sentiment === 'down').length;
-  const positivePercentage = totalFeedback > 0 
-    ? Math.round((positiveCount / totalFeedback) * 100) 
-    : 0;
+  const totalMessages = messages.length;
+  const reviewedCount = messages.filter((m) => m.reviewed).length;
+  const questionCount = messages.filter((m) => m.tag === 'question').length;
+  const feedbackCount = messages.filter((m) => m.tag === 'feedback').length;
+  const confessionCount = messages.filter((m) => m.tag === 'confession').length;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -119,15 +160,15 @@ export default function DashboardPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Feedback Dashboard</h1>
-          <p className="text-gray-600">View and manage feedback from your community</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Message Dashboard</h1>
+          <p className="text-gray-600">View and manage anonymous messages from your community</p>
         </div>
 
-        {/* Feedback Link Generator */}
+        {/* Message Link Generator */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Your Feedback Link</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Your Message Link</h2>
           <p className="text-gray-600 mb-4">
-            Share this link with your community to collect anonymous feedback:
+            Share this link with your community to collect anonymous messages:
           </p>
           <div className="flex gap-3">
             <input
@@ -148,28 +189,28 @@ export default function DashboardPage() {
         {/* Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <MetricsCard
-            title="Total Feedback"
-            value={totalFeedback}
+            title="Total Messages"
+            value={totalMessages}
             subtitle="All time"
             icon={<span className="text-4xl">📊</span>}
           />
           <MetricsCard
-            title="Reviewed"
-            value={reviewedCount}
-            subtitle={`${totalFeedback - reviewedCount} pending`}
-            icon={<span className="text-4xl">✅</span>}
+            title="Questions"
+            value={questionCount}
+            subtitle="Need answers"
+            icon={<span className="text-4xl">❓</span>}
           />
           <MetricsCard
-            title="Positive Sentiment"
-            value={`${positivePercentage}%`}
-            subtitle={`${positiveCount} positive responses`}
-            icon={<span className="text-4xl">👍</span>}
+            title="Feedback"
+            value={feedbackCount}
+            subtitle="Insights shared"
+            icon={<span className="text-4xl">💬</span>}
           />
           <MetricsCard
-            title="Negative Feedback"
-            value={negativeCount}
-            subtitle="Needs attention"
-            icon={<span className="text-4xl">👎</span>}
+            title="Confessions"
+            value={confessionCount}
+            subtitle="Anonymous thoughts"
+            icon={<span className="text-4xl">🤫</span>}
           />
         </div>
 
@@ -188,34 +229,34 @@ export default function DashboardPage() {
                 All
               </button>
               <button
-                onClick={() => setFilter('positive')}
+                onClick={() => setFilter('question')}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  filter === 'positive'
+                  filter === 'question'
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                ❓ Questions
+              </button>
+              <button
+                onClick={() => setFilter('feedback')}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  filter === 'feedback'
                     ? 'bg-green-500 text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                👍 Positive
+                💬 Feedback
               </button>
               <button
-                onClick={() => setFilter('neutral')}
+                onClick={() => setFilter('confession')}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  filter === 'neutral'
-                    ? 'bg-gray-500 text-white'
+                  filter === 'confession'
+                    ? 'bg-purple-500 text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                😐 Neutral
-              </button>
-              <button
-                onClick={() => setFilter('negative')}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  filter === 'negative'
-                    ? 'bg-red-500 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                👎 Negative
+                🤫 Confessions
               </button>
             </div>
 
@@ -231,26 +272,28 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Feedback List */}
+        {/* Messages List */}
         {isLoading ? (
           <div className="text-center py-12">
-            <p className="text-gray-500">Loading feedback...</p>
+            <p className="text-gray-500">Loading messages...</p>
           </div>
-        ) : feedback.length === 0 ? (
+        ) : messages.length === 0 ? (
           <div className="bg-white rounded-lg shadow-md p-12 text-center">
-            <p className="text-gray-500 text-lg mb-2">No feedback yet</p>
+            <p className="text-gray-500 text-lg mb-2">No messages yet</p>
             <p className="text-gray-400 text-sm">
-              Share your feedback link to start collecting responses
+              Share your message link to start collecting responses
             </p>
           </div>
         ) : (
           <div className="space-y-4">
-            {feedback.map((item) => (
-              <FeedbackCard
-                key={item.id}
-                feedback={item}
+            {messages.map((message) => (
+              <MessageCard
+                key={message.id}
+                message={message}
                 onMarkReviewed={handleMarkReviewed}
                 onDelete={handleDelete}
+                onReply={handleReply}
+                onToggleReplyVisibility={handleToggleReplyVisibility}
               />
             ))}
           </div>
@@ -262,4 +305,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-

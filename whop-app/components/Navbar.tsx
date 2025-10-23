@@ -8,6 +8,7 @@ export default function Navbar() {
 
   const navItems = [
     { href: '/pulse/dashboard', label: 'Dashboard' },
+    { href: '/pulse/feed', label: 'Public Feed' },
     { href: '/pulse/settings', label: 'Settings' },
   ];
 
