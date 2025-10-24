@@ -66,7 +66,7 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
   return (
     <div className="rounded-lg p-2">
       {creatorName && (
-        <p className="text-white/70 mb-6">
+        <p className="text-white mb-6">
           Share your thoughts with {creatorName}
         </p>
       )}
@@ -86,7 +86,7 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
             disabled={isSubmitting}
             maxLength={1000}
           />
-          <p className="text-sm text-white/50 mt-1">
+          <p className="text-sm text-white mt-1">
             {message.length}/1000 characters
           </p>
         </div>
@@ -103,7 +103,7 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
               className={`flex-1 px-6 py-4 text-lg rounded-lg font-medium transition-all ${
                 tag === 'question'
                   ? 'bg-blue-600/30 text-blue-300 ring-2 ring-blue-500'
-                  : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1] border border-white/[0.1]'
+                  : 'bg-white/[0.05] text-white hover:bg-white/[0.1] border border-white/[0.1]'
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               ❓ Question
@@ -115,7 +115,7 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
               className={`flex-1 px-6 py-4 text-lg rounded-lg font-medium transition-all ${
                 tag === 'feedback'
                   ? 'bg-green-600/30 text-green-300 ring-2 ring-green-500'
-                  : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1] border border-white/[0.1]'
+                  : 'bg-white/[0.05] text-white hover:bg-white/[0.1] border border-white/[0.1]'
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               💬 Feedback
@@ -127,7 +127,7 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
               className={`flex-1 px-6 py-4 text-lg rounded-lg font-medium transition-all ${
                 tag === 'confession'
                   ? 'bg-purple-600/30 text-purple-300 ring-2 ring-purple-500'
-                  : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1] border border-white/[0.1]'
+                  : 'bg-white/[0.05] text-white hover:bg-white/[0.1] border border-white/[0.1]'
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               🤫 Confession
@@ -137,7 +137,7 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
 
         <div className="mb-6">
           <label className="block text-sm font-medium text-white mb-3">
-            Product Category <span className="text-white/40 text-xs">(Optional)</span>
+            Product Category <span className="text-white text-xs">(Optional)</span>
           </label>
           <div className="grid grid-cols-2 gap-2">
             <button
@@ -147,7 +147,7 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
               className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
                 productCategory === 'main_product'
                   ? 'bg-purple-600/30 text-purple-300 ring-2 ring-purple-500'
-                  : 'bg-white/[0.03] text-white/60 hover:bg-white/[0.08] border border-white/[0.08]'
+                  : 'bg-white/[0.03] text-white hover:bg-white/[0.08] border border-white/[0.08]'
               } disabled:opacity-50`}
             >
               🚀 Main Product
@@ -159,7 +159,7 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
               className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
                 productCategory === 'service'
                   ? 'bg-yellow-600/30 text-yellow-300 ring-2 ring-yellow-500'
-                  : 'bg-white/[0.03] text-white/60 hover:bg-white/[0.08] border border-white/[0.08]'
+                  : 'bg-white/[0.03] text-white hover:bg-white/[0.08] border border-white/[0.08]'
               } disabled:opacity-50`}
             >
               ⚡ Service
@@ -171,7 +171,7 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
               className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
                 productCategory === 'feature_request'
                   ? 'bg-green-600/30 text-green-300 ring-2 ring-green-500'
-                  : 'bg-white/[0.03] text-white/60 hover:bg-white/[0.08] border border-white/[0.08]'
+                  : 'bg-white/[0.03] text-white hover:bg-white/[0.08] border border-white/[0.08]'
               } disabled:opacity-50`}
             >
               🎁 Feature Request
@@ -183,7 +183,7 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
               className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
                 productCategory === 'bug_report'
                   ? 'bg-red-600/30 text-red-300 ring-2 ring-red-500'
-                  : 'bg-white/[0.03] text-white/60 hover:bg-white/[0.08] border border-white/[0.08]'
+                  : 'bg-white/[0.03] text-white hover:bg-white/[0.08] border border-white/[0.08]'
               } disabled:opacity-50`}
             >
               🐛 Bug Report
@@ -195,7 +195,7 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
               className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
                 productCategory === 'other'
                   ? 'bg-white/20 text-white ring-2 ring-white/50'
-                  : 'bg-white/[0.03] text-white/60 hover:bg-white/[0.08] border border-white/[0.08]'
+                  : 'bg-white/[0.03] text-white hover:bg-white/[0.08] border border-white/[0.08]'
               } disabled:opacity-50`}
             >
               📝 Other
@@ -225,7 +225,7 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
           {isSubmitting ? 'Submitting...' : 'Submit Message'}
         </button>
 
-        <p className="text-xs text-white/50 mt-4 text-center">
+        <p className="text-xs text-white mt-4 text-center">
           Your message is completely anonymous. We don't collect any personal information.
         </p>
       </form>

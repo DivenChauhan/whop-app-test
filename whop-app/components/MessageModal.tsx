@@ -153,7 +153,7 @@ export default function MessageModal({
               </span>
             )}
 
-            <Typography as="span" variant="body-sm" className="text-white/60 ml-auto">
+            <Typography as="span" variant="body-sm" className="text-white ml-auto">
               {new Date(message.created_at).toLocaleDateString('en-US', {
                 month: 'short',
                 day: 'numeric',

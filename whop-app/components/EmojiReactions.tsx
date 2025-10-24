@@ -137,7 +137,7 @@ export default function EmojiReactions({
 
     if (reactionsWithCounts.length === 0) {
       return (
-        <div className="flex items-center gap-2 text-white/40 text-xs">
+        <div className="flex items-center gap-2 text-white text-xs">
           <span>No reactions yet - be the first!</span>
         </div>
       );
@@ -151,7 +151,7 @@ export default function EmojiReactions({
             className="flex items-center gap-1 px-2 py-1 rounded-md bg-white/[0.05] border border-white/[0.08] text-xs"
           >
             <span>{emoji}</span>
-            <span className="font-bold text-white/80">{count}</span>
+            <span className="font-bold text-white">{count}</span>
           </span>
         ))}
       </div>

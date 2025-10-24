@@ -879,10 +879,10 @@ export default function DashboardPage() {
                           (page >= currentPage - 1 && page <= currentPage + 1);
                         
                         if (!showPage && page === 2) {
-                          return <span key={page} className="text-white/30 px-2">...</span>;
+                          return <span key={page} className="text-white px-2">...</span>;
                         }
                         if (!showPage && page === totalPages - 1) {
-                          return <span key={page} className="text-white/30 px-2">...</span>;
+                          return <span key={page} className="text-white px-2">...</span>;
                         }
                         if (!showPage) return null;
 
