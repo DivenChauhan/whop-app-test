@@ -376,21 +376,20 @@ export default function PublicFeedPage() {
                                 {message.reaction_count}
                               </motion.div>
                               <div className="flex-1">
-                                <div className="flex items-center gap-1.5 mb-1">
-                                  <span className="text-sm">🔥</span>
-                                  <Typography as="span" variant="body-sm" className="text-orange-300 font-semibold text-xs">
-                                    Hot Post
-                                  </Typography>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="px-2 py-0.5 bg-orange-500/20 text-white text-xs font-semibold rounded-md border border-white">
+                                    🔥 Hot
+                                  </span>
+                                  {isNew && (
+                                    <motion.span 
+                                      className="px-2 py-0.5 bg-purple-500/30 text-white text-xs font-semibold rounded-md border border-white inline-block"
+                                      animate={{ opacity: [1, 0.7, 1] }}
+                                      transition={{ duration: 2, repeat: Infinity }}
+                                    >
+                                      ✨ New
+                                    </motion.span>
+                                  )}
                                 </div>
-                                {isNew && (
-                                  <motion.span 
-                                    className="px-1.5 py-0.5 bg-purple-500/30 text-purple-200 text-xs font-semibold rounded-md inline-block"
-                                    animate={{ opacity: [1, 0.7, 1] }}
-                                    transition={{ duration: 2, repeat: Infinity }}
-                                  >
-                                    ✨ New
-                                  </motion.span>
-                                )}
                               </div>
                             </div>
                             <Typography as="p" variant="body-sm" className="text-white/90 mb-3 line-clamp-4">
@@ -505,7 +504,7 @@ export default function PublicFeedPage() {
                             </span>
                             {isNew && (
                               <motion.span 
-                                className="px-2 py-0.5 bg-purple-500/30 text-white text-xs font-semibold rounded-md border border-purple-500/50"
+                                className="px-2 py-0.5 bg-purple-500/30 text-white text-xs font-semibold rounded-md border border-white"
                                 animate={{ opacity: [1, 0.7, 1] }}
                                 transition={{ duration: 2, repeat: Infinity }}
                               >
@@ -513,7 +512,7 @@ export default function PublicFeedPage() {
                               </motion.span>
                             )}
                             {hasPublicReply && (
-                              <span className="px-2 py-0.5 bg-blue-500/20 text-blue-300 text-xs rounded-md border border-blue-500/30">
+                              <span className="px-2 py-0.5 bg-blue-500/20 text-blue-300 text-xs font-semibold rounded-md border border-blue-500/30">
                                 💬 Replied
                               </span>
                             )}

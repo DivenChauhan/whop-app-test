@@ -231,14 +231,8 @@ export default function DashboardPage() {
   );
 
   // Color-coded label helper
-  const getTagColor = (tag: string) => {
-    const colors = {
-      question: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-      feedback: 'bg-green-500/20 text-green-300 border-green-500/30',
-      confession: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
-    };
-    return colors[tag as keyof typeof colors] || 'bg-white/10 text-white/70 border-white/20';
-  };
+  // Simple gray styling for all badges - matches feed page
+  const getTagBadgeStyle = () => 'bg-white/[0.08] text-white border border-white/[0.1]';
 
   const getTagLabel = (tag: string) => {
     const labels = {
@@ -436,17 +430,16 @@ export default function DashboardPage() {
                               {message.reaction_count || 0}
                             </div>
                             <div className="flex-1">
-                              <div className="flex items-center gap-1.5 mb-1">
-                                <span className="text-sm">🔥</span>
-                                <Typography as="span" variant="body-sm" className="text-orange-300 font-semibold text-xs">
-                                  Hot Post
-                                </Typography>
-                              </div>
-                              {isNew && (
-                                <span className="px-1.5 py-0.5 bg-purple-500/30 text-purple-200 text-xs font-semibold rounded-md">
-                                  ✨ New
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="px-2 py-0.5 bg-orange-500/20 text-white text-xs font-semibold rounded-md border border-white">
+                                  🔥 Hot
                                 </span>
-                              )}
+                                {isNew && (
+                                  <span className="px-2 py-0.5 bg-purple-500/30 text-white text-xs font-semibold rounded-md border border-white">
+                                    ✨ New
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
                           <Typography as="p" variant="body-sm" className="text-white/90 mb-2 line-clamp-2">
@@ -661,21 +654,21 @@ export default function DashboardPage() {
                           <div className="flex-1">
                             {/* Tags */}
                             <div className="flex items-center gap-2 mb-2 flex-wrap">
-                              <span className={`px-2.5 py-1 text-xs font-medium rounded-md border ${getTagColor(message.tag)}`}>
+                              <span className={`px-2 py-0.5 text-xs rounded-md ${getTagBadgeStyle()}`}>
                                 {getTagLabel(message.tag)}
                               </span>
                               {message.product_category && (
-                                <span className="px-2.5 py-1 text-xs font-medium rounded-md border bg-white/10 text-white/70 border-white/20">
+                                <span className={`px-2 py-0.5 text-xs rounded-md ${getTagBadgeStyle()}`}>
                                   {getCategoryLabel(message.product_category)}
                                 </span>
                               )}
                               {hasReply && (
-                                <span className="px-2.5 py-1 text-xs font-medium rounded-md border bg-green-500/20 text-green-300 border-green-500/30">
-                                  ✓ Replied
+                                <span className="px-2 py-0.5 text-xs font-semibold rounded-md bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                                  💬 Replied
                                 </span>
                               )}
                               {message.reviewed && (
-                                <span className="px-2.5 py-1 text-xs font-medium rounded-md border bg-white/10 text-white/60 border-white/20">
+                                <span className="px-2 py-0.5 text-xs font-semibold rounded-md bg-white/[0.08] text-white border border-white/[0.1]">
                                   Reviewed
                                 </span>
                               )}
