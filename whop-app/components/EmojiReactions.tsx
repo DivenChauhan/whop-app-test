@@ -1,6 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
+import { Smile } from 'lucide-react';
+
+// Dynamically import EmojiPicker to avoid SSR issues
+const Picker = dynamic(
+  () => import('emoji-picker-react'),
+  { ssr: false }
+);
 
 interface Reaction {
   emoji: string;
@@ -46,6 +54,25 @@ export default function EmojiReactions({
   const [reactions, setReactions] = useState<Reaction[]>([]);
   const [loading, setLoading] = useState(false);
   const [userHash] = useState(getUserHash());
+  const [showPicker, setShowPicker] = useState(false);
+  const pickerRef = useRef<HTMLDivElement>(null);
+
+  // Close picker when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (pickerRef.current && !pickerRef.current.contains(event.target as Node)) {
+        setShowPicker(false);
+      }
+    };
+
+    if (showPicker) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showPicker]);
 
   useEffect(() => {
     fetchReactions();
@@ -61,10 +88,12 @@ export default function EmojiReactions({
       // Transform API response to component state
       const reactionMap = new Map<string, Reaction>();
       
+      // Initialize with quick reactions
       quickReactions.forEach(({ emoji }) => {
         reactionMap.set(emoji, { emoji, count: 0, hasReacted: false });
       });
       
+      // Add all reactions from API (including custom emojis)
       data.forEach((r: any) => {
         const existing = reactionMap.get(r.reaction_type) || { emoji: r.reaction_type, count: 0, hasReacted: false };
         existing.count++;
@@ -126,14 +155,14 @@ export default function EmojiReactions({
     }
   };
 
+  const handleEmojiSelect = async (emojiData: any) => {
+    setShowPicker(false);
+    await handleEmojiClick(emojiData.emoji);
+  };
+
   // Compact mode: only show reactions with counts > 0
   if (compact) {
-    const reactionsWithCounts = quickReactions
-      .map(({ emoji }) => {
-        const reaction = reactions.find(r => r.emoji === emoji);
-        return { emoji, count: reaction?.count || 0 };
-      })
-      .filter(r => r.count > 0);
+    const reactionsWithCounts = reactions.filter(r => r.count > 0);
 
     if (reactionsWithCounts.length === 0) {
       return (
@@ -158,8 +187,13 @@ export default function EmojiReactions({
     );
   }
 
+  // Separate quick reactions from custom reactions
+  const quickReactionEmojis = quickReactions.map(r => r.emoji);
+  const customReactions = reactions.filter(r => !quickReactionEmojis.includes(r.emoji) && r.count > 0);
+
   return (
     <div className="flex items-center gap-3 flex-wrap">
+      {/* Quick reactions */}
       {quickReactions.map(({ emoji, label }) => {
         const reaction = reactions.find(r => r.emoji === emoji);
         const count = reaction?.count || 0;
@@ -184,6 +218,50 @@ export default function EmojiReactions({
           </button>
         );
       })}
+
+      {/* Custom reactions */}
+      {customReactions.map(({ emoji, count, hasReacted }) => (
+        <button
+          key={emoji}
+          onClick={() => handleEmojiClick(emoji)}
+          disabled={loading}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer ${
+            hasReacted 
+              ? 'bg-blue-600/30 border-blue-500/60 text-blue-300 shadow-lg shadow-blue-600/30' 
+              : 'bg-white/[0.03] border-white/[0.08] text-white hover:bg-white/[0.08] hover:border-white/[0.15]'
+          } ${loading ? 'cursor-wait' : ''}`}
+        >
+          <span className="text-xl">{emoji}</span>
+          <span className="text-base font-bold text-white">{count}</span>
+        </button>
+      ))}
+
+      {/* Emoji Picker Button */}
+      <div className="relative" ref={pickerRef}>
+        <button
+          onClick={() => setShowPicker(!showPicker)}
+          disabled={loading}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer bg-white/[0.03] border-white/[0.08] text-white hover:bg-white/[0.08] hover:border-white/[0.15] ${loading ? 'cursor-wait' : ''}`}
+          title="Add any emoji"
+        >
+          <Smile className="w-5 h-5" />
+          <span className="text-sm font-medium">More</span>
+        </button>
+
+        {/* Emoji Picker */}
+        {showPicker && (
+          <div className="absolute bottom-full mb-2 left-0 z-50">
+            <Picker
+              onEmojiClick={handleEmojiSelect}
+              theme="dark"
+              width={350}
+              height={400}
+              searchPlaceHolder="Search emoji..."
+              previewConfig={{ showPreview: false }}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
