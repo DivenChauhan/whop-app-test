@@ -512,7 +512,7 @@ export default function PublicFeedPage() {
                               </motion.span>
                             )}
                             {hasPublicReply && (
-                              <span className="px-2 py-0.5 bg-blue-500/20 text-blue-300 text-xs font-semibold rounded-md border border-blue-500/30">
+                              <span className="px-2 py-0.5 bg-white/[0.08] text-white text-xs font-semibold rounded-md border border-white/[0.1]">
                                 💬 Replied
                               </span>
                             )}
