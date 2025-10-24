@@ -1,0 +1,23 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark background with rounded corners -->
+  <rect width="512" height="512" fill="#0A0A0A" rx="100"/>
+  
+  <!-- Waveform bars (white) -->
+  <g transform="translate(256, 256)">
+    <!-- Bar 1 (left, small) -->
+    <rect x="-100" y="-22" width="20" height="44" rx="10" fill="white"/>
+    
+    <!-- Bar 2 (left-mid, medium) -->
+    <rect x="-60" y="-36" width="20" height="72" rx="10" fill="white"/>
+    
+    <!-- Bar 3 (center, tallest) -->
+    <rect x="-10" y="-58" width="20" height="116" rx="10" fill="white"/>
+    
+    <!-- Bar 4 (right-mid, medium) -->
+    <rect x="40" y="-44" width="20" height="88" rx="10" fill="white"/>
+    
+    <!-- Bar 5 (right, small) -->
+    <rect x="80" y="-28" width="20" height="56" rx="10" fill="white"/>
+  </g>
+</svg>
+
