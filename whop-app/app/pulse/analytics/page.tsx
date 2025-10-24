@@ -254,8 +254,11 @@ export default function AnalyticsPage() {
                     </div>
                     <div className="w-full bg-white/[0.05] rounded-full h-4 overflow-hidden">
                       <div
-                        className="bg-gradient-to-r from-blue-400 to-blue-500 h-full rounded-full transition-all"
-                        style={{ width: `${(count / analytics.summary.totalMessages) * 100}%` }}
+                        className="h-full rounded-full transition-all"
+                        style={{ 
+                          width: `${(count / analytics.summary.totalMessages) * 100}%`,
+                          background: 'linear-gradient(to right, rgb(96, 165, 250), rgb(59, 130, 246))'
+                        }}
                       />
                     </div>
                   </div>
@@ -282,8 +285,11 @@ export default function AnalyticsPage() {
                       </div>
                       <div className="w-full bg-white/[0.05] rounded-full h-4 overflow-hidden">
                         <div
-                          className="bg-gradient-to-r from-blue-400 to-blue-500 h-full rounded-full transition-all"
-                          style={{ width: `${(count / analytics.summary.totalMessages) * 100}%` }}
+                          className="h-full rounded-full transition-all"
+                          style={{ 
+                            width: `${(count / analytics.summary.totalMessages) * 100}%`,
+                            background: 'linear-gradient(to right, rgb(96, 165, 250), rgb(59, 130, 246))'
+                          }}
                         />
                       </div>
                     </div>
