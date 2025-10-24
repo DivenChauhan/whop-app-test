@@ -3,21 +3,37 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-export default function Navbar() {
+interface NavbarProps {
+  isCreator?: boolean;
+}
+
+export default function Navbar({ isCreator = false }: NavbarProps) {
   const pathname = usePathname();
 
-  const navItems = [
-    { href: '/pulse/dashboard', label: 'Dashboard' },
+  // Public navigation (always visible)
+  const publicNavItems = [
     { href: '/pulse/feed', label: 'Feed' },
+  ];
+
+  // Creator-only navigation
+  const creatorNavItems = [
+    { href: '/pulse/dashboard', label: 'Dashboard' },
     { href: '/pulse/analytics', label: 'Analytics' },
     { href: '/pulse/settings', label: 'Settings' },
   ];
+
+  const navItems = isCreator 
+    ? [...publicNavItems, ...creatorNavItems]
+    : publicNavItems;
 
   return (
     <nav className="bg-[#0A0A0A] border-b border-white/[0.08] sticky top-0 z-50 backdrop-blur-xl bg-opacity-80">
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex justify-between items-center h-20">
-          <Link href="/pulse/dashboard" className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
+          <Link 
+            href={isCreator ? "/pulse/dashboard" : "/pulse/feed"} 
+            className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+          >
             {/* Waveform Logo */}
             <div className="flex items-center gap-1">
               <div className="w-1 h-[11px] bg-white rounded-full"></div>
