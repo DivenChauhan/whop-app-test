@@ -212,7 +212,7 @@ export default function PublicFeedPage() {
                 className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                   filter === 'all'
                     ? 'bg-blue-600 text-white'
-                    : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1]'
+                    : 'bg-white/[0.05] text-white hover:bg-white/[0.1]'
                 }`}
               >
                 All
@@ -224,7 +224,7 @@ export default function PublicFeedPage() {
                 className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                   filter === 'question'
                     ? 'bg-blue-600 text-white'
-                    : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1]'
+                    : 'bg-white/[0.05] text-white hover:bg-white/[0.1]'
                 }`}
               >
                 ❓ Questions
@@ -236,7 +236,7 @@ export default function PublicFeedPage() {
                 className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                   filter === 'feedback'
                     ? 'bg-blue-600 text-white'
-                    : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1]'
+                    : 'bg-white/[0.05] text-white hover:bg-white/[0.1]'
                 }`}
               >
                 💬 Feedback
@@ -248,7 +248,7 @@ export default function PublicFeedPage() {
                 className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                   filter === 'confession'
                     ? 'bg-blue-600 text-white'
-                    : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1]'
+                    : 'bg-white/[0.05] text-white hover:bg-white/[0.1]'
                 }`}
               >
                 🤫 Confessions
@@ -269,7 +269,7 @@ export default function PublicFeedPage() {
                 className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                   sortBy === 'most_reacted'
                     ? 'bg-purple-600 text-white'
-                    : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1]'
+                    : 'bg-white/[0.05] text-white hover:bg-white/[0.1]'
                 }`}
               >
                 🔥 Most Reacted
@@ -281,7 +281,7 @@ export default function PublicFeedPage() {
                 className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                   sortBy === 'newest'
                     ? 'bg-purple-600 text-white'
-                    : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1]'
+                    : 'bg-white/[0.05] text-white hover:bg-white/[0.1]'
                 }`}
               >
                 ✨ Newest
@@ -293,7 +293,7 @@ export default function PublicFeedPage() {
                 className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                   sortBy === 'most_replied'
                     ? 'bg-purple-600 text-white'
-                    : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1]'
+                    : 'bg-white/[0.05] text-white hover:bg-white/[0.1]'
                 }`}
               >
                 💬 Most Replied
@@ -545,7 +545,7 @@ export default function PublicFeedPage() {
                           onClick={() => toggleCardExpansion(message.id)}
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          className="text-blue-400 hover:text-blue-300 text-sm font-medium flex items-center gap-1 transition-colors"
+                          className="text-white hover:text-blue-300 text-sm font-medium flex items-center gap-1 transition-colors"
                         >
                           {isExpanded ? (
                             <>
@@ -631,7 +631,7 @@ export default function PublicFeedPage() {
                       disabled={currentPage === 1}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      className="p-2 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] transition-all text-white/70 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="p-2 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] transition-all text-white disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       <ChevronLeft className="w-5 h-5" />
                     </motion.button>
@@ -645,7 +645,7 @@ export default function PublicFeedPage() {
                       disabled={currentPage === totalPages}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      className="p-2 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] transition-all text-white/70 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="p-2 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] transition-all text-white disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       <ChevronRight className="w-5 h-5" />
                     </motion.button>
@@ -703,7 +703,7 @@ export default function PublicFeedPage() {
                     onClick={() => setShowMessageForm(false)}
                     whileHover={{ scale: 1.1, rotate: 90 }}
                     whileTap={{ scale: 0.9 }}
-                    className="text-white/70 hover:text-white transition-colors"
+                    className="text-white hover:text-blue-300 transition-colors"
                   >
                     <Plus className="w-6 h-6 rotate-45" />
                   </motion.button>

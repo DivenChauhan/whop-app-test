@@ -500,7 +500,7 @@ export default function DashboardPage() {
                   className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                     filter === 'all'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1]'
+                      : 'bg-white/[0.05] text-white hover:bg-white/[0.1]'
                   }`}
                 >
                   All
@@ -510,7 +510,7 @@ export default function DashboardPage() {
                   className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                     filter === 'question'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1]'
+                      : 'bg-white/[0.05] text-white hover:bg-white/[0.1]'
                   }`}
                 >
                   ❓ Questions
@@ -520,7 +520,7 @@ export default function DashboardPage() {
                   className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                     filter === 'feedback'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1]'
+                      : 'bg-white/[0.05] text-white hover:bg-white/[0.1]'
                   }`}
                 >
                   💬 Feedback
@@ -530,7 +530,7 @@ export default function DashboardPage() {
                   className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                     filter === 'confession'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1]'
+                      : 'bg-white/[0.05] text-white hover:bg-white/[0.1]'
                   }`}
                 >
                   🤫 Confessions
@@ -546,7 +546,7 @@ export default function DashboardPage() {
                   className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                     productCategoryFilter === 'all'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1]'
+                      : 'bg-white/[0.05] text-white hover:bg-white/[0.1]'
                   }`}
                 >
                   All
@@ -556,7 +556,7 @@ export default function DashboardPage() {
                   className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                     productCategoryFilter === 'main_product'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1]'
+                      : 'bg-white/[0.05] text-white hover:bg-white/[0.1]'
                   }`}
                 >
                   🚀 Product
@@ -566,7 +566,7 @@ export default function DashboardPage() {
                   className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                     productCategoryFilter === 'service'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1]'
+                      : 'bg-white/[0.05] text-white hover:bg-white/[0.1]'
                   }`}
                 >
                   ⚡ Service
@@ -576,7 +576,7 @@ export default function DashboardPage() {
                   className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                     productCategoryFilter === 'feature_request'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1]'
+                      : 'bg-white/[0.05] text-white hover:bg-white/[0.1]'
                   }`}
                 >
                   🎁 Feature
@@ -586,7 +586,7 @@ export default function DashboardPage() {
                   className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                     productCategoryFilter === 'bug_report'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1]'
+                      : 'bg-white/[0.05] text-white hover:bg-white/[0.1]'
                   }`}
                 >
                   🐛 Bug
@@ -596,7 +596,7 @@ export default function DashboardPage() {
                   className={`px-3 py-1.5 rounded-lg font-medium transition-all text-sm ${
                     productCategoryFilter === 'other'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1]'
+                      : 'bg-white/[0.05] text-white hover:bg-white/[0.1]'
                   }`}
                 >
                   📝 Other
@@ -700,7 +700,7 @@ export default function DashboardPage() {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => toggleCardExpansion(message.id)}
-                              className="p-2 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] transition-all text-white/70 hover:text-white"
+                              className="p-2 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] transition-all text-white"
                             >
                               {isExpanded ? (
                                 <ChevronUp className="w-4 h-4" />
@@ -713,7 +713,7 @@ export default function DashboardPage() {
                             <div className="relative">
                               <button
                                 onClick={() => toggleDropdown(message.id)}
-                                className="p-2 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] transition-all text-white/70 hover:text-white"
+                                className="p-2 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] transition-all text-white"
                               >
                                 <MoreVertical className="w-4 h-4" />
                               </button>
@@ -865,7 +865,7 @@ export default function DashboardPage() {
                     <button
                       onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                       disabled={currentPage === 1}
-                      className="p-2 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] transition-all text-white/70 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="p-2 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] transition-all text-white disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       <ChevronLeft className="w-5 h-5" />
                     </button>
@@ -893,7 +893,7 @@ export default function DashboardPage() {
                             className={`px-3 py-1.5 rounded-lg transition-all text-sm font-medium ${
                               currentPage === page
                                 ? 'bg-blue-600 text-white'
-                                : 'bg-white/[0.05] text-white/70 hover:bg-white/[0.1] hover:text-white'
+                                : 'bg-white/[0.05] text-white hover:bg-white/[0.1]'
                             }`}
                           >
                             {page}
@@ -905,7 +905,7 @@ export default function DashboardPage() {
                     <button
                       onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                       disabled={currentPage === totalPages}
-                      className="p-2 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] transition-all text-white/70 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="p-2 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] transition-all text-white disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       <ChevronRight className="w-5 h-5" />
                     </button>

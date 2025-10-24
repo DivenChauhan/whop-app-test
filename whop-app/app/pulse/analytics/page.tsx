@@ -105,6 +105,7 @@ export default function AnalyticsPage() {
               onClick={() => setPeriod('week')}
               variant={period === 'week' ? 'primary' : 'secondary'}
               size="md"
+              className={period !== 'week' ? 'text-white' : ''}
             >
               Last 7 Days
             </Button>
@@ -112,6 +113,7 @@ export default function AnalyticsPage() {
               onClick={() => setPeriod('month')}
               variant={period === 'month' ? 'primary' : 'secondary'}
               size="md"
+              className={period !== 'month' ? 'text-white' : ''}
             >
               Last 30 Days
             </Button>
@@ -119,6 +121,7 @@ export default function AnalyticsPage() {
               onClick={() => setPeriod('all')}
               variant={period === 'all' ? 'primary' : 'secondary'}
               size="md"
+              className={period !== 'all' ? 'text-white' : ''}
             >
               All Time
             </Button>
