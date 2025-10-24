@@ -252,9 +252,9 @@ export default function AnalyticsPage() {
                         {count} ({((count / analytics.summary.totalMessages) * 100).toFixed(0)}%)
                       </Typography>
                     </div>
-                    <div className="w-full bg-white/30 rounded-full h-4 overflow-hidden shadow-inner">
+                    <div className="w-full bg-white/[0.05] rounded-full h-4 overflow-hidden">
                       <div
-                        className="bg-gradient-to-r from-blue-500 to-blue-600 h-full rounded-full transition-all shadow-lg"
+                        className="bg-gradient-to-r from-blue-500 to-blue-600 h-full rounded-full transition-all"
                         style={{ width: `${(count / analytics.summary.totalMessages) * 100}%` }}
                       />
                     </div>
@@ -280,9 +280,9 @@ export default function AnalyticsPage() {
                           {count} ({((count / analytics.summary.totalMessages) * 100).toFixed(0)}%)
                         </Typography>
                       </div>
-                      <div className="w-full bg-white/30 rounded-full h-4 overflow-hidden shadow-inner">
+                      <div className="w-full bg-white/[0.05] rounded-full h-4 overflow-hidden">
                         <div
-                          className="bg-gradient-to-r from-blue-500 to-blue-600 h-full rounded-full transition-all shadow-lg"
+                          className="bg-gradient-to-r from-blue-500 to-blue-600 h-full rounded-full transition-all"
                           style={{ width: `${(count / analytics.summary.totalMessages) * 100}%` }}
                         />
                       </div>
