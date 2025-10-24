@@ -265,7 +265,7 @@ export default function DashboardPage() {
           <Typography as="h1" variant="display-sm" className="text-white mb-2 font-bold">
             Dashboard
           </Typography>
-          <Typography as="p" variant="body" className="text-white/70 mb-6">
+          <Typography as="p" variant="body" className="text-white mb-6">
             Manage your anonymous messages
           </Typography>
 
@@ -321,7 +321,7 @@ export default function DashboardPage() {
             >
               Reviewed
               {reviewedMessages.length > 0 && (
-                <span className="ml-2 px-2 py-0.5 text-xs bg-white/10 text-white/60 rounded-full">
+                <span className="ml-2 px-2 py-0.5 text-xs bg-white/10 text-white rounded-full">
                   {reviewedMessages.length}
                 </span>
               )}
@@ -335,7 +335,7 @@ export default function DashboardPage() {
         {/* Key Metrics Summary - Always Visible */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white/[0.03] rounded-xl p-5 hover:bg-white/[0.05] transition-all border border-white/[0.05]">
-            <Typography as="p" variant="body-sm" className="text-white/60 mb-1 font-medium text-sm">
+            <Typography as="p" variant="body-sm" className="text-white mb-1 font-medium text-sm">
               Total
             </Typography>
             <Typography as="p" variant="title" className="text-white font-bold">
@@ -343,7 +343,7 @@ export default function DashboardPage() {
             </Typography>
           </div>
           <div className="bg-white/[0.03] rounded-xl p-5 hover:bg-white/[0.05] transition-all border border-white/[0.05]">
-            <Typography as="p" variant="body-sm" className="text-white/60 mb-1 font-medium text-sm">
+            <Typography as="p" variant="body-sm" className="text-white mb-1 font-medium text-sm">
               This Week
             </Typography>
             <Typography as="p" variant="title" className="text-white font-bold">
@@ -351,7 +351,7 @@ export default function DashboardPage() {
             </Typography>
           </div>
           <div className="bg-white/[0.03] rounded-xl p-5 hover:bg-white/[0.05] transition-all border border-white/[0.05]">
-            <Typography as="p" variant="body-sm" className="text-white/60 mb-1 font-medium text-sm">
+            <Typography as="p" variant="body-sm" className="text-white mb-1 font-medium text-sm">
               Pending
             </Typography>
             <Typography as="p" variant="title" className="text-white font-bold">
@@ -359,7 +359,7 @@ export default function DashboardPage() {
             </Typography>
           </div>
           <div className="bg-white/[0.03] rounded-xl p-5 hover:bg-white/[0.05] transition-all border border-white/[0.05]">
-            <Typography as="p" variant="body-sm" className="text-white/60 mb-1 font-medium text-sm">
+            <Typography as="p" variant="body-sm" className="text-white mb-1 font-medium text-sm">
               Replied
             </Typography>
             <Typography as="p" variant="title" className="text-white font-bold">
@@ -376,7 +376,7 @@ export default function DashboardPage() {
               <Typography as="h2" variant="title-sm" className="text-white mb-2 font-semibold">
                 📢 Share Your Link
               </Typography>
-              <Typography as="p" variant="body-sm" className="text-white/60 mb-4">
+              <Typography as="p" variant="body-sm" className="text-white mb-4">
                 Share this link to collect anonymous messages
               </Typography>
               <div className="flex gap-3">
@@ -489,7 +489,7 @@ export default function DashboardPage() {
         {(activeTab === 'inbox' || activeTab === 'reviewed') && (
           <div className="bg-white/[0.03] rounded-xl p-4 mb-6 border border-white/[0.05]">
             <div className="flex flex-wrap items-center gap-4">
-              <Typography as="span" variant="body-sm" className="text-white/60 font-medium text-xs">
+              <Typography as="span" variant="body-sm" className="text-white font-medium text-xs">
                 Filter by:
               </Typography>
               
@@ -624,7 +624,7 @@ export default function DashboardPage() {
           
           {isLoading ? (
             <div className="bg-white/[0.03] rounded-xl p-16 text-center border border-white/[0.05]">
-              <Typography as="p" variant="body" className="text-white/70">
+              <Typography as="p" variant="body" className="text-white">
                 Loading messages...
               </Typography>
             </div>
@@ -633,7 +633,7 @@ export default function DashboardPage() {
               <Typography as="p" variant="title-sm" className="text-white mb-2">
                 No messages yet
               </Typography>
-              <Typography as="p" variant="body-sm" className="text-white/60">
+              <Typography as="p" variant="body-sm" className="text-white">
                 {activeTab === 'inbox' 
                   ? 'All caught up! No new messages to review.'
                   : activeTab === 'reviewed'
@@ -798,7 +798,7 @@ export default function DashboardPage() {
                         <div className="border-t border-white/[0.05] p-4 space-y-4">
                           {/* Full Message */}
                           <div>
-                            <Typography as="p" variant="body-sm" className="text-white/60 mb-2 text-xs font-medium">
+                            <Typography as="p" variant="body-sm" className="text-white mb-2 text-xs font-medium">
                               Full Message
                             </Typography>
                             <Typography as="p" variant="body" className="text-white whitespace-pre-wrap">
@@ -808,7 +808,7 @@ export default function DashboardPage() {
 
                           {/* Reactions */}
                           <div>
-                            <Typography as="p" variant="body-sm" className="text-white/60 mb-2 text-xs font-medium">
+                            <Typography as="p" variant="body-sm" className="text-white mb-2 text-xs font-medium">
                               Reactions
                             </Typography>
                             <EmojiReactions 

@@ -145,7 +145,7 @@ export default function PublicFeedPage() {
               <Typography as="h1" variant="display-sm" className="text-white mb-2 font-bold">
                 Community Feed
               </Typography>
-              <Typography as="p" variant="body" className="text-white/70">
+              <Typography as="p" variant="body" className="text-white">
                 React to messages and help prioritize what gets answered
               </Typography>
             </div>
@@ -179,15 +179,15 @@ export default function PublicFeedPage() {
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center p-3 bg-white/[0.03] rounded-lg">
                 <div className="text-2xl font-bold text-white mb-1">{totalReactions}</div>
-                <div className="text-xs text-white/60">Total Reactions</div>
+                <div className="text-xs text-white">Total Reactions</div>
               </div>
               <div className="text-center p-3 bg-white/[0.03] rounded-lg">
                 <div className="text-2xl font-bold text-white mb-1">{totalReplies}</div>
-                <div className="text-xs text-white/60">Replies</div>
+                <div className="text-xs text-white">Replies</div>
               </div>
               <div className="text-center p-3 bg-white/[0.03] rounded-lg">
                 <div className="text-2xl font-bold text-white mb-1">{recentMessages}</div>
-                <div className="text-xs text-white/60">Last 24h</div>
+                <div className="text-xs text-white">Last 24h</div>
               </div>
             </div>
           </motion.div>
@@ -201,7 +201,7 @@ export default function PublicFeedPage() {
           transition={{ delay: 0.2 }}
         >
           <div className="flex flex-wrap items-center gap-4 mb-4">
-            <Typography as="span" variant="body-sm" className="text-white/60 font-medium text-xs">
+            <Typography as="span" variant="body-sm" className="text-white font-medium text-xs">
               Filter by:
             </Typography>
             <div className="flex flex-wrap gap-2">
@@ -258,7 +258,7 @@ export default function PublicFeedPage() {
 
           {/* Sorting Options */}
           <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-white/[0.05]">
-            <Typography as="span" variant="body-sm" className="text-white/60 font-medium text-xs">
+            <Typography as="span" variant="body-sm" className="text-white font-medium text-xs">
               Sort by:
             </Typography>
             <div className="flex flex-wrap gap-2">
@@ -308,7 +308,7 @@ export default function PublicFeedPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <Typography as="p" variant="body" className="text-white/70">
+            <Typography as="p" variant="body" className="text-white">
               Loading messages...
             </Typography>
           </motion.div>
@@ -321,7 +321,7 @@ export default function PublicFeedPage() {
             <Typography as="p" variant="title-sm" className="text-white mb-2">
               No messages yet
             </Typography>
-            <Typography as="p" variant="body-sm" className="text-white/60">
+            <Typography as="p" variant="body-sm" className="text-white">
               Be the first to leave a message!
             </Typography>
           </motion.div>
@@ -441,11 +441,11 @@ export default function PublicFeedPage() {
                       >
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-orange-400 font-bold text-sm">{message.reaction_count}</span>
-                          <Typography as="span" variant="body-sm" className="text-white/70 text-xs line-clamp-1 flex-1">
+                          <Typography as="span" variant="body-sm" className="text-white text-xs line-clamp-1 flex-1">
                             {message.message}
                           </Typography>
                         </div>
-                        <Typography as="span" variant="body-sm" className="text-white/40 text-xs">
+                        <Typography as="span" variant="body-sm" className="text-white text-xs">
                           {new Date(message.created_at).toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',
@@ -600,7 +600,7 @@ export default function PublicFeedPage() {
                               animate={{ opacity: 1 }}
                               transition={{ delay: 0.2 }}
                             >
-                              <Typography as="p" variant="body-sm" className="text-white/70 mb-3 font-semibold text-xs">
+                              <Typography as="p" variant="body-sm" className="text-white mb-3 font-semibold text-xs">
                                 Reactions
                               </Typography>
                               <EmojiReactions messageId={message.id} />
@@ -636,7 +636,7 @@ export default function PublicFeedPage() {
                       <ChevronLeft className="w-5 h-5" />
                     </motion.button>
                     
-                    <Typography as="span" variant="body-sm" className="text-white/70 min-w-[80px] text-center">
+                    <Typography as="span" variant="body-sm" className="text-white min-w-[80px] text-center">
                       {currentPage} / {totalPages}
                     </Typography>
                     
