@@ -87,17 +87,17 @@ export default function AnalyticsPage() {
       <div className="max-w-6xl mx-auto px-6 py-10">
         {/* Header */}
         <div className="mb-10">
-          <Typography as="h1" variant="display-sm" className="text-white mb-3 font-bold">
+          <Typography as="h1" variant="display-sm" className="!text-white mb-3 font-bold">
             Analytics
           </Typography>
-          <Typography as="p" variant="body" className="text-white text-lg">
+          <Typography as="p" variant="body" className="!text-white text-lg">
             Insights and trends from your messages
           </Typography>
         </div>
 
         {/* Period Filter */}
         <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6 mb-8">
-          <Typography as="p" variant="body-sm" className="text-white mb-4 font-medium">
+          <Typography as="p" variant="body-sm" className="!text-white mb-4 font-medium">
             Time Period
           </Typography>
           <div className="flex flex-wrap gap-2">
@@ -130,7 +130,7 @@ export default function AnalyticsPage() {
 
         {isLoading ? (
           <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-16 text-center">
-            <Typography as="p" variant="body" className="text-white">
+            <Typography as="p" variant="body" className="!text-white">
               Loading analytics...
             </Typography>
           </div>
@@ -150,54 +150,54 @@ export default function AnalyticsPage() {
           <div className="space-y-8">
             {/* Summary Stats */}
             <div>
-              <Typography as="h2" variant="title" className="text-white mb-6 font-bold">
+              <Typography as="h2" variant="title" className="!text-white mb-6 font-bold">
                 Overview
               </Typography>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                 <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6 hover:bg-white/[0.05] transition-all">
-                  <Typography as="p" variant="body-sm" className="text-white mb-2 font-medium">
+                  <Typography as="p" variant="body-sm" className="!text-white mb-2 font-medium">
                     Total Messages
                   </Typography>
-                  <Typography as="p" variant="display-sm" className="text-white font-bold mb-1">
+                  <Typography as="p" variant="display-sm" className="!text-white font-bold mb-1">
                     {analytics.summary.totalMessages}
                   </Typography>
-                  <Typography as="p" variant="body-sm" className="text-white/80">
+                  <Typography as="p" variant="body-sm" className="!text-white">
                     All feedback received
                   </Typography>
                 </div>
 
                 <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6 hover:bg-white/[0.05] transition-all">
-                  <Typography as="p" variant="body-sm" className="text-white mb-2 font-medium">
+                  <Typography as="p" variant="body-sm" className="!text-white mb-2 font-medium">
                     Total Reactions
                   </Typography>
-                  <Typography as="p" variant="display-sm" className="text-white font-bold mb-1">
+                  <Typography as="p" variant="display-sm" className="!text-white font-bold mb-1">
                     {analytics.summary.totalReactions}
                   </Typography>
-                  <Typography as="p" variant="body-sm" className="text-white/80">
+                  <Typography as="p" variant="body-sm" className="!text-white">
                     Community engagement
                   </Typography>
                 </div>
 
                 <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6 hover:bg-white/[0.05] transition-all">
-                  <Typography as="p" variant="body-sm" className="text-white mb-2 font-medium">
+                  <Typography as="p" variant="body-sm" className="!text-white mb-2 font-medium">
                     Response Rate
                   </Typography>
-                  <Typography as="p" variant="display-sm" className="text-white font-bold mb-1">
+                  <Typography as="p" variant="display-sm" className="!text-white font-bold mb-1">
                     {analytics.summary.responseRate}%
                   </Typography>
-                  <Typography as="p" variant="body-sm" className="text-white/80">
+                  <Typography as="p" variant="body-sm" className="!text-white">
                     Messages with replies
                   </Typography>
                 </div>
 
                 <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6 hover:bg-white/[0.05] transition-all">
-                  <Typography as="p" variant="body-sm" className="text-white mb-2 font-medium">
+                  <Typography as="p" variant="body-sm" className="!text-white mb-2 font-medium">
                     Avg Response Time
                   </Typography>
-                  <Typography as="p" variant="display-sm" className="text-white font-bold mb-1">
+                  <Typography as="p" variant="display-sm" className="!text-white font-bold mb-1">
                     {analytics.summary.averageResponseTime}
                   </Typography>
-                  <Typography as="p" variant="body-sm" className="text-white/80">
+                  <Typography as="p" variant="body-sm" className="!text-white">
                     Time to respond
                   </Typography>
                 </div>
@@ -207,19 +207,19 @@ export default function AnalyticsPage() {
             {/* Additional Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6">
-                <Typography as="p" variant="body-sm" className="text-white mb-2 font-medium">
+                <Typography as="p" variant="body-sm" className="!text-white mb-2 font-medium">
                   Public Replies
                 </Typography>
-                <Typography as="p" variant="title" className="text-white font-bold">
+                <Typography as="p" variant="title" className="!text-white font-bold">
                   {analytics.summary.publicRepliesCount}
                 </Typography>
               </div>
 
               <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6">
-                <Typography as="p" variant="body-sm" className="text-white mb-2 font-medium">
+                <Typography as="p" variant="body-sm" className="!text-white mb-2 font-medium">
                   Avg Reactions/Message
                 </Typography>
-                <Typography as="p" variant="title" className="text-white font-bold">
+                <Typography as="p" variant="title" className="!text-white font-bold">
                   {typeof analytics.summary.averageReactionsPerMessage === 'number' 
                     ? analytics.summary.averageReactionsPerMessage.toFixed(1) 
                     : analytics.summary.averageReactionsPerMessage}
@@ -227,10 +227,10 @@ export default function AnalyticsPage() {
               </div>
 
               <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6">
-                <Typography as="p" variant="body-sm" className="text-white mb-2 font-medium">
+                <Typography as="p" variant="body-sm" className="!text-white mb-2 font-medium">
                   Unanswered (3+ days)
                 </Typography>
-                <Typography as="p" variant="title" className="text-white font-bold">
+                <Typography as="p" variant="title" className="!text-white font-bold">
                   {analytics.summary.oldUnansweredCount}
                 </Typography>
               </div>
@@ -238,17 +238,17 @@ export default function AnalyticsPage() {
 
             {/* Message Types Distribution */}
             <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6">
-              <Typography as="h3" variant="title-sm" className="text-white mb-5 font-semibold">
+              <Typography as="h3" variant="title-sm" className="!text-white mb-5 font-semibold">
                 Message Types
               </Typography>
               <div className="space-y-4">
                 {Object.entries(analytics.distributions.tags).map(([tag, count]) => (
                   <div key={tag}>
                     <div className="flex justify-between items-center mb-2">
-                      <Typography as="span" variant="body" className="text-white font-medium">
+                      <Typography as="span" variant="body" className="!text-white font-medium">
                         {getTagLabel(tag)}
                       </Typography>
-                      <Typography as="span" variant="body" className="text-white/70">
+                      <Typography as="span" variant="body" className="!text-white">
                         {count} ({((count / analytics.summary.totalMessages) * 100).toFixed(0)}%)
                       </Typography>
                     </div>
@@ -266,17 +266,17 @@ export default function AnalyticsPage() {
             {/* Product Categories */}
             {Object.keys(analytics.distributions.productCategories).length > 0 && (
               <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6">
-                <Typography as="h3" variant="title-sm" className="text-white mb-5 font-semibold">
+                <Typography as="h3" variant="title-sm" className="!text-white mb-5 font-semibold">
                   Product Categories
                 </Typography>
                 <div className="space-y-4">
                   {Object.entries(analytics.distributions.productCategories).map(([category, count]) => (
                     <div key={category}>
                       <div className="flex justify-between items-center mb-2">
-                        <Typography as="span" variant="body" className="text-white font-medium">
+                        <Typography as="span" variant="body" className="!text-white font-medium">
                           {getCategoryLabel(category)}
                         </Typography>
-                        <Typography as="span" variant="body" className="text-white/70">
+                        <Typography as="span" variant="body" className="!text-white">
                           {count} ({((count / analytics.summary.totalMessages) * 100).toFixed(0)}%)
                         </Typography>
                       </div>
@@ -294,7 +294,7 @@ export default function AnalyticsPage() {
 
             {/* Peak Engagement */}
             <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-2xl p-6">
-              <Typography as="h3" variant="title-sm" className="text-white mb-2 font-semibold">
+              <Typography as="h3" variant="title-sm" className="!text-white mb-2 font-semibold">
                 🔥 Peak Engagement
               </Typography>
               <Typography as="p" variant="body" className="text-white">
@@ -306,7 +306,7 @@ export default function AnalyticsPage() {
             {/* Top Reactions */}
             {Object.keys(analytics.distributions.reactionTypes).length > 0 && (
               <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6">
-                <Typography as="h3" variant="title-sm" className="text-white mb-5 font-semibold">
+                <Typography as="h3" variant="title-sm" className="!text-white mb-5 font-semibold">
                   Top Reactions
                 </Typography>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -316,7 +316,7 @@ export default function AnalyticsPage() {
                     .map(([emoji, count]) => (
                       <div key={emoji} className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-4 text-center">
                         <div className="text-4xl mb-2">{emoji}</div>
-                        <Typography as="p" variant="title-sm" className="text-white font-bold">
+                        <Typography as="p" variant="title-sm" className="!text-white font-bold">
                           {count}
                         </Typography>
                       </div>

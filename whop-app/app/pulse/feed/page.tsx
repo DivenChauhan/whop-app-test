@@ -98,7 +98,11 @@ export default function PublicFeedPage() {
 
   // Activity level: High (>20 reactions), Medium (10-20), Low (<10)
   const activityLevel = totalReactions > 20 ? 'High' : totalReactions > 10 ? 'Medium' : 'Low';
-  const activityColor = activityLevel === 'High' ? 'text-green-400' : activityLevel === 'Medium' ? 'text-yellow-400' : 'text-orange-400';
+  const activityBadgeStyle = activityLevel === 'High' 
+    ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg' 
+    : activityLevel === 'Medium' 
+      ? 'bg-gradient-to-r from-yellow-600 to-orange-500 text-white shadow-lg' 
+      : 'bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-lg';
 
   // Sort messages
   const getSortedMessages = (messagesToSort: MessageWithRelations[]) => {
@@ -142,10 +146,10 @@ export default function PublicFeedPage() {
         >
           <div className="flex items-start justify-between mb-4">
             <div>
-              <Typography as="h1" variant="display-sm" className="text-white mb-2 font-bold">
+              <Typography as="h1" variant="display-sm" className="!text-white mb-2 font-bold">
                 Community Feed
               </Typography>
-              <Typography as="p" variant="body" className="text-white">
+              <Typography as="p" variant="body" className="!text-white">
                 React to messages and help prioritize what gets answered
               </Typography>
             </div>
@@ -164,13 +168,20 @@ export default function PublicFeedPage() {
             }}
           >
             <div className="flex items-center gap-2 mb-3">
-              <Activity className="w-5 h-5 text-blue-400" />
-              <Typography as="h3" variant="title-sm" className="text-white font-bold">
+              <Activity className="w-5 h-5 text-white" />
+              <Typography as="h3" variant="title-sm" className="!text-white font-bold">
                 Community Pulse
               </Typography>
               <motion.span 
-                className={`ml-auto px-3 py-1 rounded-full text-sm font-semibold ${activityColor} bg-white/[0.1]`}
-                animate={{ scale: [1, 1.05, 1] }}
+                className={`ml-auto px-3 py-1 rounded-full text-sm font-semibold ${activityBadgeStyle}`}
+                animate={{ 
+                  scale: [1, 1.05, 1],
+                  boxShadow: activityLevel === 'High' 
+                    ? ['0 0 15px rgba(34, 197, 94, 0.5)', '0 0 30px rgba(16, 185, 129, 0.6)', '0 0 15px rgba(34, 197, 94, 0.5)']
+                    : activityLevel === 'Medium'
+                      ? ['0 0 15px rgba(234, 179, 8, 0.5)', '0 0 30px rgba(249, 115, 22, 0.6)', '0 0 15px rgba(234, 179, 8, 0.5)']
+                      : ['0 0 15px rgba(249, 115, 22, 0.5)', '0 0 30px rgba(239, 68, 68, 0.6)', '0 0 15px rgba(249, 115, 22, 0.5)']
+                }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
                 {activityLevel} Activity
@@ -201,9 +212,9 @@ export default function PublicFeedPage() {
           transition={{ delay: 0.2 }}
         >
           <div className="flex flex-wrap items-center gap-4 mb-4">
-            <Typography as="span" variant="body-sm" className="text-white font-medium text-xs">
-              Filter by:
-            </Typography>
+                <Typography as="span" variant="body-sm" className="!text-white font-medium text-xs">
+                  Filter by:
+                </Typography>
             <div className="flex flex-wrap gap-2">
               <motion.button
                 onClick={() => setFilter('all')}
@@ -258,9 +269,9 @@ export default function PublicFeedPage() {
 
           {/* Sorting Options */}
           <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-white/[0.05]">
-            <Typography as="span" variant="body-sm" className="text-white font-medium text-xs">
-              Sort by:
-            </Typography>
+                <Typography as="span" variant="body-sm" className="!text-white font-medium text-xs">
+                  Sort by:
+                </Typography>
             <div className="flex flex-wrap gap-2">
               <motion.button
                 onClick={() => setSortBy('most_reacted')}
@@ -308,9 +319,9 @@ export default function PublicFeedPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <Typography as="p" variant="body" className="text-white">
-              Loading messages...
-            </Typography>
+              <Typography as="p" variant="body" className="!text-white">
+                Loading messages...
+              </Typography>
           </motion.div>
         ) : messages.length === 0 ? (
           <motion.div 
@@ -318,12 +329,12 @@ export default function PublicFeedPage() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <Typography as="p" variant="title-sm" className="text-white mb-2">
-              No messages yet
-            </Typography>
-            <Typography as="p" variant="body-sm" className="text-white">
-              Be the first to leave a message!
-            </Typography>
+              <Typography as="p" variant="title-sm" className="!text-white mb-2">
+                No messages yet
+              </Typography>
+              <Typography as="p" variant="body-sm" className="!text-white">
+                Be the first to leave a message!
+              </Typography>
           </motion.div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -369,7 +380,7 @@ export default function PublicFeedPage() {
                           >
                             <div className="flex items-start gap-3 mb-3">
                               <motion.div 
-                                className="text-4xl font-bold text-orange-400"
+                                className="text-4xl font-bold text-white"
                                 animate={{ scale: [1, 1.1, 1] }}
                                 transition={{ duration: 1.5, repeat: Infinity }}
                               >
@@ -392,11 +403,11 @@ export default function PublicFeedPage() {
                                 </div>
                               </div>
                             </div>
-                            <Typography as="p" variant="body-sm" className="text-white/90 mb-3 line-clamp-4">
+                            <Typography as="p" variant="body-sm" className="!text-white mb-3 line-clamp-4">
                               {message.message}
                             </Typography>
                             <div className="flex items-center justify-between">
-                              <Typography as="span" variant="body-sm" className="text-white text-xs">
+                              <Typography as="span" variant="body-sm" className="!text-white text-xs">
                                 {new Date(message.created_at).toLocaleDateString('en-US', {
                                   month: 'short',
                                   day: 'numeric',
@@ -440,12 +451,12 @@ export default function PublicFeedPage() {
                         whileHover={{ x: 4 }}
                       >
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-orange-400 font-bold text-sm">{message.reaction_count}</span>
-                          <Typography as="span" variant="body-sm" className="text-white text-xs line-clamp-1 flex-1">
+                          <span className="text-white font-bold text-sm">{message.reaction_count}</span>
+                          <Typography as="span" variant="body-sm" className="!text-white text-xs line-clamp-1 flex-1">
                             {message.message}
                           </Typography>
                         </div>
-                        <Typography as="span" variant="body-sm" className="text-white text-xs">
+                        <Typography as="span" variant="body-sm" className="!text-white text-xs">
                           {new Date(message.created_at).toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',
@@ -461,14 +472,14 @@ export default function PublicFeedPage() {
             {/* Main Feed */}
             <div className={hotPosts.length > 0 ? 'lg:col-span-2' : 'lg:col-span-3'}>
               <div className="flex items-center justify-between mb-4">
-                <Typography as="h2" variant="title-sm" className="text-white font-bold">
-                  All Messages
+                    <Typography as="h2" variant="title-sm" className="!text-white font-bold">
+                      All Messages
                   <span className="ml-2 text-white text-sm font-normal">
                     ({regularMessages.length})
                   </span>
                 </Typography>
                 {regularMessages.length > MESSAGES_PER_PAGE && (
-                  <Typography as="span" variant="body-sm" className="text-white">
+                  <Typography as="span" variant="body-sm" className="!text-white">
                     Page {currentPage} of {totalPages}
                   </Typography>
                 )}
@@ -518,7 +529,7 @@ export default function PublicFeedPage() {
                             )}
                           </div>
                           
-                          <Typography as="span" variant="body-sm" className="text-white text-xs whitespace-nowrap ml-3">
+                          <Typography as="span" variant="body-sm" className="!text-white text-xs whitespace-nowrap ml-3">
                             {new Date(message.created_at).toLocaleDateString('en-US', {
                               month: 'short',
                               day: 'numeric',
@@ -530,7 +541,7 @@ export default function PublicFeedPage() {
                         <Typography 
                           as="p" 
                           variant="body-sm" 
-                          className={`text-white/90 mb-3 ${!isExpanded ? 'line-clamp-2' : 'whitespace-pre-wrap'}`}
+                          className={`!text-white mb-3 ${!isExpanded ? 'line-clamp-2' : 'whitespace-pre-wrap'}`}
                         >
                           {message.message}
                         </Typography>
@@ -580,14 +591,14 @@ export default function PublicFeedPage() {
                                 transition={{ delay: 0.1 }}
                               >
                                 <div className="flex items-center gap-2 mb-2">
-                                  <Typography as="span" variant="body-sm" className="text-white font-semibold text-xs">
-                                    Creator's Reply
-                                  </Typography>
+                                <Typography as="span" variant="body-sm" className="!text-white font-semibold text-xs">
+                                  Creator's Reply
+                                </Typography>
                                   <span className="px-2 py-0.5 text-xs rounded-md bg-white/[0.08] text-white border border-white/[0.1]">
                                     👁️ Public
                                   </span>
                                 </div>
-                                <Typography as="p" variant="body-sm" className="text-white/90">
+                                <Typography as="p" variant="body-sm" className="!text-white">
                                   {message.replies.find(r => r.is_public)?.reply_text}
                                 </Typography>
                               </motion.div>
@@ -600,9 +611,9 @@ export default function PublicFeedPage() {
                               animate={{ opacity: 1 }}
                               transition={{ delay: 0.2 }}
                             >
-                              <Typography as="p" variant="body-sm" className="text-white mb-3 font-semibold text-xs">
-                                Reactions
-                              </Typography>
+                            <Typography as="p" variant="body-sm" className="!text-white mb-3 font-semibold text-xs">
+                              Reactions
+                            </Typography>
                               <EmojiReactions messageId={message.id} />
                             </motion.div>
                           </motion.div>
@@ -621,7 +632,7 @@ export default function PublicFeedPage() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
                 >
-                  <Typography as="span" variant="body-sm" className="text-white">
+                  <Typography as="span" variant="body-sm" className="!text-white">
                     Showing {((currentPage - 1) * MESSAGES_PER_PAGE) + 1} to {Math.min(currentPage * MESSAGES_PER_PAGE, regularMessages.length)} of {regularMessages.length} messages
                   </Typography>
                   
@@ -636,7 +647,7 @@ export default function PublicFeedPage() {
                       <ChevronLeft className="w-5 h-5" />
                     </motion.button>
                     
-                    <Typography as="span" variant="body-sm" className="text-white min-w-[80px] text-center">
+                    <Typography as="span" variant="body-sm" className="!text-white min-w-[80px] text-center">
                       {currentPage} / {totalPages}
                     </Typography>
                     
@@ -696,7 +707,7 @@ export default function PublicFeedPage() {
             >
               <div className="bg-[#0A0A0A] border border-white/[0.1] rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between mb-6">
-                  <Typography as="h2" variant="title-sm" className="text-white font-bold">
+                  <Typography as="h2" variant="title-sm" className="!text-white font-bold">
                     Share Your Thoughts
                   </Typography>
                   <motion.button

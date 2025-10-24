@@ -240,7 +240,7 @@ export default function MessageModal({
                   disabled={isLoading || !replyText.trim()}
                   size="md"
                   variant="primary"
-                  className="flex-1"
+                  className="flex-1 !text-white"
                 >
                   {isLoading ? 'Sending...' : 'Send Reply'}
                 </Button>
@@ -253,6 +253,7 @@ export default function MessageModal({
                   disabled={isLoading}
                   size="md"
                   variant="secondary"
+                  className="!text-white"
                 >
                   Cancel
                 </Button>
@@ -268,7 +269,7 @@ export default function MessageModal({
                 disabled={isLoading}
                 size="md"
                 variant="primary"
-                className="text-white"
+                className="!text-white"
               >
                 Reply
               </Button>
@@ -279,7 +280,7 @@ export default function MessageModal({
                 disabled={isLoading}
                 size="md"
                 variant={message.reviewed ? 'secondary' : 'primary'}
-                className="text-white"
+                className="!text-white"
               >
                 {isLoading ? 'Loading...' : message.reviewed ? 'Unmark Reviewed' : 'Mark Reviewed'}
               </Button>
@@ -291,7 +292,7 @@ export default function MessageModal({
                   disabled={isLoading}
                   size="md"
                   variant="danger"
-                  className="text-white"
+                  className="!text-white"
                 >
                   🗑️ Delete
                 </Button>
@@ -302,7 +303,7 @@ export default function MessageModal({
               disabled={isLoading}
               size="md"
               variant="secondary"
-              className="text-white ml-auto"
+              className="!text-white ml-auto"
             >
               Close
             </Button>

@@ -279,7 +279,7 @@ export default function DashboardPage() {
               className={`px-6 py-3 font-medium transition-all relative ${
                 activeTab === 'overview'
                   ? 'text-blue-400'
-                  : 'text-white/50 hover:text-white/70'
+                  : 'text-white hover:text-blue-300'
               }`}
             >
               Overview
@@ -295,7 +295,7 @@ export default function DashboardPage() {
               className={`px-6 py-3 font-medium transition-all relative ${
                 activeTab === 'inbox'
                   ? 'text-blue-400'
-                  : 'text-white/50 hover:text-white/70'
+                  : 'text-white hover:text-blue-300'
               }`}
             >
               Inbox
@@ -316,7 +316,7 @@ export default function DashboardPage() {
               className={`px-6 py-3 font-medium transition-all relative ${
                 activeTab === 'reviewed'
                   ? 'text-blue-400'
-                  : 'text-white/50 hover:text-white/70'
+                  : 'text-white hover:text-blue-300'
               }`}
             >
               Reviewed
@@ -385,7 +385,7 @@ export default function DashboardPage() {
                   value={`${origin}/p/${CREATOR_SLUG}`}
                   className="flex-1 text-base text-white bg-white/[0.05] border-white/[0.1]"
                 />
-                <Button onClick={copyFeedbackLink} size="md" variant="primary" className="text-white">
+                <Button onClick={copyFeedbackLink} size="md" variant="primary" className="!text-white">
                   {copied ? (
                     <>
                       <Check className="w-4 h-4 mr-2" />
@@ -427,7 +427,7 @@ export default function DashboardPage() {
                           className="bg-gradient-to-br from-white/[0.05] to-orange-500/10 rounded-xl p-5 border border-orange-500/20 hover:border-orange-500/40 transition-all cursor-pointer group"
                         >
                           <div className="flex items-start gap-3 mb-3">
-                            <div className="text-4xl font-bold text-orange-400">
+                            <div className="text-4xl font-bold text-white">
                               {message.reaction_count || 0}
                             </div>
                             <div className="flex-1">
@@ -448,10 +448,10 @@ export default function DashboardPage() {
                               </div>
                             </div>
                           </div>
-                          <Typography as="p" variant="body-sm" className="text-white/90 mb-2 line-clamp-2">
+                          <Typography as="p" variant="body-sm" className="!text-white mb-2 line-clamp-2">
                             {message.message}
                           </Typography>
-                          <Typography as="span" variant="body-sm" className="text-white text-xs">
+                          <Typography as="span" variant="body-sm" className="!text-white text-xs">
                             {new Date(message.created_at).toLocaleDateString('en-US', {
                               month: 'short',
                               day: 'numeric',
@@ -681,12 +681,12 @@ export default function DashboardPage() {
                             </div>
 
                             {/* Message Preview */}
-                            <Typography as="p" variant="body" className="text-white line-clamp-2 text-sm mb-2">
+                            <Typography as="p" variant="body" className="!text-white line-clamp-2 text-sm mb-2">
                               {message.message}
                             </Typography>
 
                             {/* Metadata */}
-                            <Typography as="span" variant="body-sm" className="text-white text-xs">
+                            <Typography as="span" variant="body-sm" className="!text-white text-xs">
                               {new Date(message.created_at).toLocaleDateString('en-US', {
                                 month: 'short',
                                 day: 'numeric',
@@ -785,7 +785,7 @@ export default function DashboardPage() {
                               onClick={() => setSelectedMessage(message)}
                               size="sm"
                               variant="primary"
-                              className="text-white text-xs"
+                              className="!text-white text-xs"
                             >
                               Reply
                             </Button>
@@ -798,17 +798,17 @@ export default function DashboardPage() {
                         <div className="border-t border-white/[0.05] p-4 space-y-4">
                           {/* Full Message */}
                           <div>
-                            <Typography as="p" variant="body-sm" className="text-white mb-2 text-xs font-medium">
+                            <Typography as="p" variant="body-sm" className="!text-white mb-2 text-xs font-medium">
                               Full Message
                             </Typography>
-                            <Typography as="p" variant="body" className="text-white whitespace-pre-wrap">
+                            <Typography as="p" variant="body" className="!text-white whitespace-pre-wrap">
                               {message.message}
                             </Typography>
                           </div>
 
                           {/* Reactions */}
                           <div>
-                            <Typography as="p" variant="body-sm" className="text-white mb-2 text-xs font-medium">
+                            <Typography as="p" variant="body-sm" className="!text-white mb-2 text-xs font-medium">
                               Reactions
                             </Typography>
                             <EmojiReactions 
@@ -820,18 +820,18 @@ export default function DashboardPage() {
                           {hasReply ? (
                             <div className="bg-blue-500/10 rounded-lg p-4 border border-blue-500/30">
                               <div className="flex items-center justify-between mb-2">
-                                <Typography as="span" variant="body-sm" className="text-white font-semibold">
+                                <Typography as="span" variant="body-sm" className="!text-white font-semibold">
                                   Your Reply
                                 </Typography>
                                 <span className={`px-2 py-0.5 text-xs rounded-md border ${
                                   reply.is_public 
                                     ? 'bg-green-500/20 text-green-300 border-green-500/30' 
-                                    : 'bg-white/10 text-white/60 border-white/20'
+                                    : 'bg-white/10 text-white border-white/20'
                                 }`}>
                                   {reply.is_public ? '👁️ Public' : '🔒 Private'}
                                 </span>
                               </div>
-                              <Typography as="p" variant="body" className="text-white/90">
+                              <Typography as="p" variant="body" className="!text-white">
                                 {reply.reply_text}
                               </Typography>
                             </div>
@@ -841,7 +841,7 @@ export default function DashboardPage() {
                                 onClick={() => setSelectedMessage(message)}
                                 size="md"
                                 variant="primary"
-                                className="text-white"
+                                className="!text-white"
                               >
                                 Reply to Message
                               </Button>
