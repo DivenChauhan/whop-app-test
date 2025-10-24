@@ -451,7 +451,7 @@ export default function DashboardPage() {
                           <Typography as="p" variant="body-sm" className="text-white/90 mb-2 line-clamp-2">
                             {message.message}
                           </Typography>
-                          <Typography as="span" variant="body-sm" className="text-white/50 text-xs">
+                          <Typography as="span" variant="body-sm" className="text-white text-xs">
                             {new Date(message.created_at).toLocaleDateString('en-US', {
                               month: 'short',
                               day: 'numeric',
@@ -611,12 +611,12 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between mb-4">
             <Typography as="h2" variant="title-sm" className="text-white font-bold">
               {activeTab === 'overview' ? 'All Messages' : activeTab === 'inbox' ? 'Inbox' : 'Reviewed'}
-              <span className="ml-2 text-white/50 text-sm font-normal">
+              <span className="ml-2 text-white text-sm font-normal">
                 ({filteredMessages.length})
               </span>
             </Typography>
             {filteredMessages.length > MESSAGES_PER_PAGE && (
-              <Typography as="span" variant="body-sm" className="text-white/50">
+              <Typography as="span" variant="body-sm" className="text-white">
                 Page {currentPage} of {totalPages}
               </Typography>
             )}
@@ -686,7 +686,7 @@ export default function DashboardPage() {
                             </Typography>
 
                             {/* Metadata */}
-                            <Typography as="span" variant="body-sm" className="text-white/50 text-xs">
+                            <Typography as="span" variant="body-sm" className="text-white text-xs">
                               {new Date(message.created_at).toLocaleDateString('en-US', {
                                 month: 'short',
                                 day: 'numeric',
@@ -857,7 +857,7 @@ export default function DashboardPage() {
               {/* Pagination */}
               {totalPages > 1 && (
                 <div className="flex items-center justify-between mt-6 pt-6 border-t border-white/[0.05]">
-                  <Typography as="span" variant="body-sm" className="text-white/50">
+                  <Typography as="span" variant="body-sm" className="text-white">
                     Showing {((currentPage - 1) * MESSAGES_PER_PAGE) + 1} to {Math.min(currentPage * MESSAGES_PER_PAGE, filteredMessages.length)} of {filteredMessages.length} messages
                   </Typography>
                   

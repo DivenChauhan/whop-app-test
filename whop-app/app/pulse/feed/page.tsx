@@ -396,7 +396,7 @@ export default function PublicFeedPage() {
                               {message.message}
                             </Typography>
                             <div className="flex items-center justify-between">
-                              <Typography as="span" variant="body-sm" className="text-white/50 text-xs">
+                              <Typography as="span" variant="body-sm" className="text-white text-xs">
                                 {new Date(message.created_at).toLocaleDateString('en-US', {
                                   month: 'short',
                                   day: 'numeric',
@@ -463,12 +463,12 @@ export default function PublicFeedPage() {
               <div className="flex items-center justify-between mb-4">
                 <Typography as="h2" variant="title-sm" className="text-white font-bold">
                   All Messages
-                  <span className="ml-2 text-white/50 text-sm font-normal">
+                  <span className="ml-2 text-white text-sm font-normal">
                     ({regularMessages.length})
                   </span>
                 </Typography>
                 {regularMessages.length > MESSAGES_PER_PAGE && (
-                  <Typography as="span" variant="body-sm" className="text-white/50">
+                  <Typography as="span" variant="body-sm" className="text-white">
                     Page {currentPage} of {totalPages}
                   </Typography>
                 )}
@@ -518,7 +518,7 @@ export default function PublicFeedPage() {
                             )}
                           </div>
                           
-                          <Typography as="span" variant="body-sm" className="text-white/50 text-xs whitespace-nowrap ml-3">
+                          <Typography as="span" variant="body-sm" className="text-white text-xs whitespace-nowrap ml-3">
                             {new Date(message.created_at).toLocaleDateString('en-US', {
                               month: 'short',
                               day: 'numeric',
@@ -621,7 +621,7 @@ export default function PublicFeedPage() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
                 >
-                  <Typography as="span" variant="body-sm" className="text-white/50">
+                  <Typography as="span" variant="body-sm" className="text-white">
                     Showing {((currentPage - 1) * MESSAGES_PER_PAGE) + 1} to {Math.min(currentPage * MESSAGES_PER_PAGE, regularMessages.length)} of {regularMessages.length} messages
                   </Typography>
                   
