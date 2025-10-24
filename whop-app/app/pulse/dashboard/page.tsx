@@ -418,6 +418,7 @@ export default function DashboardPage() {
                     .map((message) => {
                       const messageAge = Date.now() - new Date(message.created_at).getTime();
                       const isNew = messageAge < 24 * 60 * 60 * 1000;
+                      const hasReply = Array.isArray(message.reply) && message.reply.length > 0;
 
                       return (
                         <div
@@ -437,6 +438,11 @@ export default function DashboardPage() {
                                 {isNew && (
                                   <span className="px-2 py-0.5 bg-purple-500/30 text-white text-xs font-semibold rounded-md border border-white">
                                     ✨ New
+                                  </span>
+                                )}
+                                {hasReply && (
+                                  <span className="px-2 py-0.5 bg-blue-500/20 text-blue-300 text-xs font-semibold rounded-md border border-blue-500/30">
+                                    💬 Replied
                                   </span>
                                 )}
                               </div>
@@ -640,8 +646,8 @@ export default function DashboardPage() {
               <div className="space-y-3">
                 {paginatedMessages.map((message) => {
                   const isExpanded = expandedCards.has(message.id);
-                  const reply = Array.isArray(message.reply) && message.reply.length > 0 ? message.reply[0] : null;
-                  const hasReply = !!reply;
+                  const hasReply = Array.isArray(message.reply) && message.reply.length > 0;
+                  const reply = hasReply ? message.reply[0] : null;
 
                   return (
                     <div
