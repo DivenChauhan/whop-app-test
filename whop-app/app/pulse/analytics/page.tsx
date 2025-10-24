@@ -153,6 +153,18 @@ export default function AnalyticsPage() {
               <Typography as="h2" variant="title" className="!text-white mb-6 font-bold">
                 Overview
               </Typography>
+
+              {/* Peak Engagement */}
+              <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-2xl p-6 mb-6">
+                <Typography as="h3" variant="title-sm" className="!text-white mb-2 font-semibold">
+                  🔥 Peak Engagement
+                </Typography>
+                <Typography as="p" variant="body" className="text-white">
+                  <span className="font-bold text-white">{analytics.summary.peakEngagementDay}</span> had the most activity with{' '}
+                  <span className="font-bold text-white">{analytics.summary.peakEngagementCount} messages</span>
+                </Typography>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
                 <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6 hover:bg-white/[0.05] transition-all">
                   <Typography as="p" variant="body-sm" className="!text-white mb-2 font-medium">
@@ -297,17 +309,6 @@ export default function AnalyticsPage() {
                 </div>
               </div>
             )}
-
-            {/* Peak Engagement */}
-            <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/30 rounded-2xl p-6">
-              <Typography as="h3" variant="title-sm" className="!text-white mb-2 font-semibold">
-                🔥 Peak Engagement
-              </Typography>
-              <Typography as="p" variant="body" className="text-white">
-                <span className="font-bold text-white">{analytics.summary.peakEngagementDay}</span> had the most activity with{' '}
-                <span className="font-bold text-white">{analytics.summary.peakEngagementCount} messages</span>
-              </Typography>
-            </div>
 
             {/* Top Reactions */}
             {Object.keys(analytics.distributions.reactionTypes).length > 0 && (
