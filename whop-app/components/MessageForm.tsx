@@ -204,14 +204,14 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
         </div>
 
         {error && (
-          <div className="mb-4 p-4 bg-red-500/20 border border-red-500/30 rounded-lg">
-            <p className="text-sm text-red-300">{error}</p>
+          <div className="mb-4 p-4 bg-red-500/20 border border-red-500 rounded-lg">
+            <p className="text-sm !text-white">{error}</p>
           </div>
         )}
 
         {success && (
-          <div className="mb-4 p-4 bg-green-500/20 border border-green-500/30 rounded-lg">
-            <p className="text-sm text-green-300">
+          <div className="mb-4 p-4 bg-green-500/20 border border-green-500 rounded-lg">
+            <p className="text-sm !text-white">
               ✓ Thank you! Your message has been submitted anonymously.
             </p>
           </div>
