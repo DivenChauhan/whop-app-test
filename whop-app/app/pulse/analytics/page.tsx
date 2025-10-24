@@ -257,7 +257,7 @@ export default function AnalyticsPage() {
                         className="h-full rounded-full transition-all"
                         style={{ 
                           width: `${(count / analytics.summary.totalMessages) * 100}%`,
-                          background: 'linear-gradient(to right, rgb(96, 165, 250), rgb(59, 130, 246))'
+                          background: 'linear-gradient(to right, rgb(37, 99, 235), rgb(29, 78, 216))'
                         }}
                       />
                     </div>
@@ -288,7 +288,7 @@ export default function AnalyticsPage() {
                           className="h-full rounded-full transition-all"
                           style={{ 
                             width: `${(count / analytics.summary.totalMessages) * 100}%`,
-                            background: 'linear-gradient(to right, rgb(96, 165, 250), rgb(59, 130, 246))'
+                            background: 'linear-gradient(to right, rgb(37, 99, 235), rgb(29, 78, 216))'
                           }}
                         />
                       </div>
