@@ -19,6 +19,7 @@ export type ProductCategory = 'main_product' | 'service' | 'feature_request' | '
 export interface Message {
   id: string;
   creator_id: string;
+  company_id: string;
   message: string;
   tag: MessageTag;
   product_category?: ProductCategory;
@@ -44,6 +45,7 @@ export interface Reaction {
 
 export interface Creator {
   id: string;
+  company_id: string;
   name: string;
   email: string;
   feedback_link: string;

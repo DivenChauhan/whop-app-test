@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { getUserAuth } from '@/lib/auth';
 
 // PATCH /api/feedback/[id] - Update message (mark as reviewed)
 export async function PATCH(
@@ -18,10 +19,31 @@ export async function PATCH(
       );
     }
 
+    // Get company ID from environment
+    const companyId = process.env.NEXT_PUBLIC_WHOP_COMPANY_ID;
+    
+    if (!companyId) {
+      return NextResponse.json(
+        { error: 'Company configuration missing' },
+        { status: 500 }
+      );
+    }
+
+    // Verify user is a creator with access to this company
+    const auth = await getUserAuth();
+    if (!auth.isCreator || !auth.hasCompanyAccess) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Creator access required' },
+        { status: 403 }
+      );
+    }
+
+    // Update only if message belongs to this company
     const { data, error } = await supabase
       .from('messages')
       .update({ reviewed })
       .eq('id', id)
+      .eq('company_id', companyId)
       .select()
       .single();
 
@@ -30,6 +52,13 @@ export async function PATCH(
       return NextResponse.json(
         { error: 'Failed to update message' },
         { status: 500 }
+      );
+    }
+
+    if (!data) {
+      return NextResponse.json(
+        { error: 'Message not found or unauthorized' },
+        { status: 404 }
       );
     }
 
@@ -51,10 +80,31 @@ export async function DELETE(
   try {
     const { id } = await params;
 
+    // Get company ID from environment
+    const companyId = process.env.NEXT_PUBLIC_WHOP_COMPANY_ID;
+    
+    if (!companyId) {
+      return NextResponse.json(
+        { error: 'Company configuration missing' },
+        { status: 500 }
+      );
+    }
+
+    // Verify user is a creator with access to this company
+    const auth = await getUserAuth();
+    if (!auth.isCreator || !auth.hasCompanyAccess) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Creator access required' },
+        { status: 403 }
+      );
+    }
+
+    // Delete only if message belongs to this company
     const { error } = await supabase
       .from('messages')
       .delete()
-      .eq('id', id);
+      .eq('id', id)
+      .eq('company_id', companyId);
 
     if (error) {
       console.error('Error deleting message:', error);

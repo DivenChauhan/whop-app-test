@@ -4,39 +4,55 @@ import { headers } from "next/headers";
 export interface AuthResult {
   userId: string | null;
   user: any | null;
+  companyId: string | null;
   isCreator: boolean;
   isAuthenticated: boolean;
+  hasCompanyAccess: boolean;
 }
 
 /**
  * Get authentication status for the current user
  * Checks if user is authenticated and if they're a creator (admin of the company)
+ * Also verifies they have access to the company this app instance is for
  */
 export async function getUserAuth(): Promise<AuthResult> {
   const headersList = await headers();
+  const companyId = process.env.NEXT_PUBLIC_WHOP_COMPANY_ID;
   
   try {
     const verified = await whopSdk.verifyUserToken(headersList);
     const user = await whopSdk.users.getUser({ userId: verified.userId });
     
-    // Check if user is creator (admin of the company)
-    const companyId = process.env.NEXT_PUBLIC_WHOP_COMPANY_ID;
-    
     let isCreator = false;
+    let hasCompanyAccess = false;
+    
     if (companyId) {
-      const accessCheck = await whopSdk.access.checkIfUserHasAccessToCompany({
-        userId: verified.userId,
-        companyId,
-      });
-      // 'admin' means they're an owner/moderator of the company
-      isCreator = accessCheck.accessLevel === 'admin';
+      try {
+        const accessCheck = await whopSdk.access.checkIfUserHasAccessToCompany({
+          userId: verified.userId,
+          companyId,
+        });
+        
+        // User has access if they're a member or admin of this company
+        hasCompanyAccess = accessCheck.hasAccess;
+        
+        // 'admin' means they're an owner/moderator of the company
+        isCreator = accessCheck.accessLevel === 'admin';
+      } catch (error) {
+        console.error('Error checking company access:', error);
+        // User doesn't have access to this company
+        hasCompanyAccess = false;
+        isCreator = false;
+      }
     }
     
     return {
       userId: verified.userId,
       user,
+      companyId: companyId || null,
       isCreator,
       isAuthenticated: true,
+      hasCompanyAccess,
     };
   } catch (error) {
     // User is not authenticated (public visitor)
@@ -50,8 +66,10 @@ export async function getUserAuth(): Promise<AuthResult> {
           return {
             userId: agentUserId,
             user,
+            companyId: companyId || null,
             isCreator: true, // Agent user is creator in dev mode
             isAuthenticated: true,
+            hasCompanyAccess: true, // Agent user has access in dev mode
           };
         } catch {
           // Ignore if agent user doesn't exist
@@ -62,8 +80,10 @@ export async function getUserAuth(): Promise<AuthResult> {
     return {
       userId: null,
       user: null,
+      companyId: null,
       isCreator: false,
       isAuthenticated: false,
+      hasCompanyAccess: false,
     };
   }
 }
@@ -75,8 +95,22 @@ export async function getUserAuth(): Promise<AuthResult> {
 export async function requireCreator(): Promise<AuthResult> {
   const auth = await getUserAuth();
   
-  if (!auth.isCreator) {
+  if (!auth.isCreator || !auth.hasCompanyAccess) {
     throw new Error('Unauthorized: Creator access required');
+  }
+  
+  return auth;
+}
+
+/**
+ * Require company access (member or admin) - throws error if user doesn't have access
+ * Use this for protecting pages that require company membership
+ */
+export async function requireCompanyAccess(): Promise<AuthResult> {
+  const auth = await getUserAuth();
+  
+  if (!auth.hasCompanyAccess || !auth.isAuthenticated) {
+    throw new Error('Unauthorized: Company access required');
   }
   
   return auth;

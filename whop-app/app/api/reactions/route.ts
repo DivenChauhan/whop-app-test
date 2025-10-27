@@ -14,6 +14,31 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get company ID from environment
+    const companyId = process.env.NEXT_PUBLIC_WHOP_COMPANY_ID;
+    
+    if (!companyId) {
+      return NextResponse.json(
+        { error: 'Company configuration missing' },
+        { status: 500 }
+      );
+    }
+
+    // Verify the message belongs to this company
+    const { data: message, error: messageError } = await supabase
+      .from('messages')
+      .select('id, company_id')
+      .eq('id', messageId)
+      .eq('company_id', companyId)
+      .single();
+
+    if (messageError || !message) {
+      return NextResponse.json(
+        { error: 'Message not found or unauthorized' },
+        { status: 404 }
+      );
+    }
+
     // Check if user already reacted with this emoji
     const { data: existing } = await supabase
       .from('reactions')
@@ -71,6 +96,31 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Get company ID from environment
+    const companyId = process.env.NEXT_PUBLIC_WHOP_COMPANY_ID;
+    
+    if (!companyId) {
+      return NextResponse.json(
+        { error: 'Company configuration missing' },
+        { status: 500 }
+      );
+    }
+
+    // Verify the message belongs to this company
+    const { data: message, error: messageError } = await supabase
+      .from('messages')
+      .select('id, company_id')
+      .eq('id', messageId)
+      .eq('company_id', companyId)
+      .single();
+
+    if (messageError || !message) {
+      return NextResponse.json(
+        { error: 'Message not found or unauthorized' },
+        { status: 404 }
+      );
+    }
+
     const { data, error } = await supabase
       .from('reactions')
       .select('*')
@@ -104,6 +154,31 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
+      );
+    }
+
+    // Get company ID from environment
+    const companyId = process.env.NEXT_PUBLIC_WHOP_COMPANY_ID;
+    
+    if (!companyId) {
+      return NextResponse.json(
+        { error: 'Company configuration missing' },
+        { status: 500 }
+      );
+    }
+
+    // Verify the message belongs to this company
+    const { data: message, error: messageError } = await supabase
+      .from('messages')
+      .select('id, company_id')
+      .eq('id', messageId)
+      .eq('company_id', companyId)
+      .single();
+
+    if (messageError || !message) {
+      return NextResponse.json(
+        { error: 'Message not found or unauthorized' },
+        { status: 404 }
       );
     }
 

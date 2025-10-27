@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { getUserAuth } from '@/lib/auth';
 
 // PATCH /api/replies/[id] - Update reply (toggle visibility or update text)
 export async function PATCH(
@@ -10,6 +11,39 @@ export async function PATCH(
     const { id } = await params;
     const body = await request.json();
     const { isPublic, replyText } = body;
+
+    // Get company ID from environment
+    const companyId = process.env.NEXT_PUBLIC_WHOP_COMPANY_ID;
+    
+    if (!companyId) {
+      return NextResponse.json(
+        { error: 'Company configuration missing' },
+        { status: 500 }
+      );
+    }
+
+    // Verify user is a creator with access to this company
+    const auth = await getUserAuth();
+    if (!auth.isCreator || !auth.hasCompanyAccess) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Creator access required' },
+        { status: 403 }
+      );
+    }
+
+    // First, get the reply and verify its message belongs to this company
+    const { data: reply, error: replyError } = await supabase
+      .from('replies')
+      .select('id, message_id, messages!inner(company_id)')
+      .eq('id', id)
+      .single();
+
+    if (replyError || !reply || (reply as any).messages?.company_id !== companyId) {
+      return NextResponse.json(
+        { error: 'Reply not found or unauthorized' },
+        { status: 404 }
+      );
+    }
 
     const updates: any = {};
     if (isPublic !== undefined) {
@@ -58,6 +92,39 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
+
+    // Get company ID from environment
+    const companyId = process.env.NEXT_PUBLIC_WHOP_COMPANY_ID;
+    
+    if (!companyId) {
+      return NextResponse.json(
+        { error: 'Company configuration missing' },
+        { status: 500 }
+      );
+    }
+
+    // Verify user is a creator with access to this company
+    const auth = await getUserAuth();
+    if (!auth.isCreator || !auth.hasCompanyAccess) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Creator access required' },
+        { status: 403 }
+      );
+    }
+
+    // First, get the reply and verify its message belongs to this company
+    const { data: reply, error: replyError } = await supabase
+      .from('replies')
+      .select('id, message_id, messages!inner(company_id)')
+      .eq('id', id)
+      .single();
+
+    if (replyError || !reply || (reply as any).messages?.company_id !== companyId) {
+      return NextResponse.json(
+        { error: 'Reply not found or unauthorized' },
+        { status: 404 }
+      );
+    }
 
     const { error } = await supabase
       .from('replies')

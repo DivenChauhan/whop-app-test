@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { getUserAuth } from '@/lib/auth';
 
 // POST /api/feedback - Submit new message
 export async function POST(request: NextRequest) {
@@ -14,10 +15,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get company ID from environment (set by Whop for this app installation)
+    const companyId = process.env.NEXT_PUBLIC_WHOP_COMPANY_ID;
+    
+    if (!companyId) {
+      return NextResponse.json(
+        { error: 'Company configuration missing' },
+        { status: 500 }
+      );
+    }
+
     const { data, error } = await supabase
       .from('messages')
       .insert({
         creator_id: creatorId,
+        company_id: companyId,
         message,
         tag,
         product_category: productCategory || null,
@@ -60,6 +72,25 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Get company ID from environment (set by Whop for this app installation)
+    const companyId = process.env.NEXT_PUBLIC_WHOP_COMPANY_ID;
+    
+    if (!companyId) {
+      return NextResponse.json(
+        { error: 'Company configuration missing' },
+        { status: 500 }
+      );
+    }
+
+    // Verify user has access to this company
+    const auth = await getUserAuth();
+    if (!auth.hasCompanyAccess) {
+      return NextResponse.json(
+        { error: 'Unauthorized: No access to this company' },
+        { status: 403 }
+      );
+    }
+
     let query = supabase
       .from('messages')
       .select(`
@@ -67,6 +98,7 @@ export async function GET(request: NextRequest) {
         reply:replies(*)
       `)
       .eq('creator_id', creatorId)
+      .eq('company_id', companyId)
       .order('created_at', { ascending: false });
 
     if (reviewedFilter !== null) {

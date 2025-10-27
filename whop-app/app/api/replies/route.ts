@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { getUserAuth } from '@/lib/auth';
 
 // POST /api/replies - Create a reply to a message
 export async function POST(request: NextRequest) {
@@ -11,6 +12,40 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
+      );
+    }
+
+    // Get company ID from environment
+    const companyId = process.env.NEXT_PUBLIC_WHOP_COMPANY_ID;
+    
+    if (!companyId) {
+      return NextResponse.json(
+        { error: 'Company configuration missing' },
+        { status: 500 }
+      );
+    }
+
+    // Verify user is a creator with access to this company
+    const auth = await getUserAuth();
+    if (!auth.isCreator || !auth.hasCompanyAccess) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Creator access required' },
+        { status: 403 }
+      );
+    }
+
+    // Verify the message belongs to this company
+    const { data: message, error: messageError } = await supabase
+      .from('messages')
+      .select('id, company_id')
+      .eq('id', messageId)
+      .eq('company_id', companyId)
+      .single();
+
+    if (messageError || !message) {
+      return NextResponse.json(
+        { error: 'Message not found or unauthorized' },
+        { status: 404 }
       );
     }
 
@@ -53,6 +88,31 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(
         { error: 'Message ID is required' },
         { status: 400 }
+      );
+    }
+
+    // Get company ID from environment
+    const companyId = process.env.NEXT_PUBLIC_WHOP_COMPANY_ID;
+    
+    if (!companyId) {
+      return NextResponse.json(
+        { error: 'Company configuration missing' },
+        { status: 500 }
+      );
+    }
+
+    // Verify the message belongs to this company
+    const { data: message, error: messageError } = await supabase
+      .from('messages')
+      .select('id, company_id')
+      .eq('id', messageId)
+      .eq('company_id', companyId)
+      .single();
+
+    if (messageError || !message) {
+      return NextResponse.json(
+        { error: 'Message not found or unauthorized' },
+        { status: 404 }
       );
     }
 

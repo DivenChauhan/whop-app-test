@@ -15,6 +15,16 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Get company ID from environment (set by Whop for this app installation)
+    const companyId = process.env.NEXT_PUBLIC_WHOP_COMPANY_ID;
+    
+    if (!companyId) {
+      return NextResponse.json(
+        { error: 'Company configuration missing' },
+        { status: 500 }
+      );
+    }
+
     // Build query for all messages (replies will be filtered client-side)
     let query = supabase
       .from('messages')
@@ -22,7 +32,8 @@ export async function GET(request: NextRequest) {
         *,
         replies(*)
       `)
-      .eq('creator_id', creatorId);
+      .eq('creator_id', creatorId)
+      .eq('company_id', companyId);
 
     // Apply tag filter if provided
     if (tag && tag !== 'all') {

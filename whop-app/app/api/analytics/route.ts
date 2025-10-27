@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { getUserAuth } from '@/lib/auth';
 
 // GET /api/analytics?creatorId=xxx&period=week|month|all
 export async function GET(request: NextRequest) {
@@ -12,6 +13,25 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(
         { error: 'Creator ID is required' },
         { status: 400 }
+      );
+    }
+
+    // Get company ID from environment (set by Whop for this app installation)
+    const companyId = process.env.NEXT_PUBLIC_WHOP_COMPANY_ID;
+    
+    if (!companyId) {
+      return NextResponse.json(
+        { error: 'Company configuration missing' },
+        { status: 500 }
+      );
+    }
+
+    // Verify user has access to this company (must be creator for analytics)
+    const auth = await getUserAuth();
+    if (!auth.isCreator || !auth.hasCompanyAccess) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Creator access required' },
+        { status: 403 }
       );
     }
 
@@ -33,7 +53,8 @@ export async function GET(request: NextRequest) {
         replies(id, is_public),
         reactions(id, reaction_type)
       `)
-      .eq('creator_id', creatorId);
+      .eq('creator_id', creatorId)
+      .eq('company_id', companyId);
 
     if (startDate) {
       messagesQuery = messagesQuery.gte('created_at', startDate.toISOString());
