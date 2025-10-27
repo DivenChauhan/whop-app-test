@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { MessageTag, ProductCategory } from '@/lib/supabase';
+import { useState, useEffect } from 'react';
+import { MessageTag, ProductCategory, WhopProduct } from '@/lib/supabase';
 
 interface MessageFormProps {
   creatorId: string;
@@ -13,9 +13,31 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
   const [message, setMessage] = useState('');
   const [tag, setTag] = useState<MessageTag>('feedback');
   const [productCategory, setProductCategory] = useState<ProductCategory | undefined>(undefined);
+  const [selectedProduct, setSelectedProduct] = useState<{ id: string; name: string } | null>(null);
+  const [products, setProducts] = useState<WhopProduct[]>([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+
+  // Fetch products on mount
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/products');
+        if (response.ok) {
+          const { data } = await response.json();
+          setProducts(data || []);
+        }
+      } catch (err) {
+        console.error('Error fetching products:', err);
+      } finally {
+        setLoadingProducts(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,6 +62,8 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
           message: message.trim(),
           tag,
           productCategory,
+          productId: selectedProduct?.id || null,
+          productName: selectedProduct?.name || null,
         }),
       });
 
@@ -51,6 +75,7 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
       setMessage('');
       setTag('feedback');
       setProductCategory(undefined);
+      setSelectedProduct(null);
 
       if (onSuccess) {
         onSuccess();
@@ -135,72 +160,49 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
           </div>
         </div>
 
+        {/* Product Selection - Shows actual Whop products */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-white mb-3">
-            Product Category <span className="text-white text-xs">(Optional)</span>
+            Related Product <span className="text-white text-xs">(Optional)</span>
           </label>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => setProductCategory(productCategory === 'main_product' ? undefined : 'main_product')}
+          
+          {loadingProducts ? (
+            <div className="px-4 py-3 bg-white/[0.05] border border-white/[0.08] rounded-lg text-white text-sm">
+              Loading products...
+            </div>
+          ) : products.length > 0 ? (
+            <select
+              value={selectedProduct?.id || ''}
+              onChange={(e) => {
+                const productId = e.target.value;
+                if (productId) {
+                  const product = products.find(p => p.id === productId);
+                  setSelectedProduct(product ? { id: product.id, name: product.name } : null);
+                } else {
+                  setSelectedProduct(null);
+                }
+              }}
               disabled={isSubmitting}
-              className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
-                productCategory === 'main_product'
-                  ? 'bg-purple-600/30 text-purple-300 ring-2 ring-purple-500'
-                  : 'bg-white/[0.03] text-white hover:bg-white/[0.08] border border-white/[0.08]'
-              } disabled:opacity-50`}
+              className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.08] rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              🚀 Main Product
-            </button>
-            <button
-              type="button"
-              onClick={() => setProductCategory(productCategory === 'service' ? undefined : 'service')}
-              disabled={isSubmitting}
-              className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
-                productCategory === 'service'
-                  ? 'bg-yellow-600/30 text-yellow-300 ring-2 ring-yellow-500'
-                  : 'bg-white/[0.03] text-white hover:bg-white/[0.08] border border-white/[0.08]'
-              } disabled:opacity-50`}
-            >
-              ⚡ Service
-            </button>
-            <button
-              type="button"
-              onClick={() => setProductCategory(productCategory === 'feature_request' ? undefined : 'feature_request')}
-              disabled={isSubmitting}
-              className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
-                productCategory === 'feature_request'
-                  ? 'bg-green-600/30 text-green-300 ring-2 ring-green-500'
-                  : 'bg-white/[0.03] text-white hover:bg-white/[0.08] border border-white/[0.08]'
-              } disabled:opacity-50`}
-            >
-              🎁 Feature Request
-            </button>
-            <button
-              type="button"
-              onClick={() => setProductCategory(productCategory === 'bug_report' ? undefined : 'bug_report')}
-              disabled={isSubmitting}
-              className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
-                productCategory === 'bug_report'
-                  ? 'bg-red-600/30 text-red-300 ring-2 ring-red-500'
-                  : 'bg-white/[0.03] text-white hover:bg-white/[0.08] border border-white/[0.08]'
-              } disabled:opacity-50`}
-            >
-              🐛 Bug Report
-            </button>
-            <button
-              type="button"
-              onClick={() => setProductCategory(productCategory === 'other' ? undefined : 'other')}
-              disabled={isSubmitting}
-              className={`px-4 py-3 text-sm rounded-lg font-medium transition-all ${
-                productCategory === 'other'
-                  ? 'bg-white/20 text-white ring-2 ring-white/50'
-                  : 'bg-white/[0.03] text-white hover:bg-white/[0.08] border border-white/[0.08]'
-              } disabled:opacity-50`}
-            >
-              📝 Other
-            </button>
-          </div>
+              <option value="">Select a product (optional)</option>
+              {products.map((product) => (
+                <option key={product.id} value={product.id} className="bg-[#0A0A0A] text-white">
+                  {product.name}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <div className="px-4 py-3 bg-white/[0.05] border border-white/[0.08] rounded-lg text-white text-sm">
+              No products found. This creator hasn't added any products yet.
+            </div>
+          )}
+          
+          {selectedProduct && (
+            <p className="mt-2 text-xs text-white">
+              ✓ Feedback will be associated with: <span className="font-semibold">{selectedProduct.name}</span>
+            </p>
+          )}
         </div>
 
         {error && (

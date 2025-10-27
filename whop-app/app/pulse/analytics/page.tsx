@@ -28,6 +28,7 @@ export interface Analytics {
   distributions: {
     tags: Record<string, number>;
     productCategories: Record<string, number>;
+    products: Array<{ id: string; name: string; count: number }>;
     reactionTypes: Record<string, number>;
     hours: Record<string, number>;
   };
