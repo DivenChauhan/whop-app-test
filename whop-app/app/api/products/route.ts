@@ -23,33 +23,58 @@ export async function GET(request: NextRequest) {
 
     console.log('Fetching products for company:', companyId);
 
-    // Call Whop API directly since SDK doesn't support products yet
-    const whopApiUrl = `https://api.whop.com/api/v5/products?company_id=${companyId}&per=100`;
-    
-    const response = await fetch(whopApiUrl, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    // Try multiple API endpoints since Whop's product API structure varies
+    const endpointsToTry = [
+      `https://api.whop.com/api/v5/companies/${companyId}/products`,
+      `https://api.whop.com/api/v5/plans?company_id=${companyId}`,
+      `https://api.whop.com/api/v2/products?company_id=${companyId}`,
+      `https://api.whop.com/api/v5/experiences?company_id=${companyId}`,
+      `https://api.whop.com/api/v5/products?company_id=${companyId}`,
+    ];
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.error('Whop API Error:', response.status, errorData);
-      
-      return NextResponse.json(
-        { 
-          error: 'Failed to fetch products from Whop',
-          status: response.status,
-          details: errorData
-        },
-        { status: response.status }
-      );
+    let data = null;
+    let lastError = null;
+
+    for (const endpoint of endpointsToTry) {
+      try {
+        console.log('Trying endpoint:', endpoint);
+        
+        const response = await fetch(endpoint, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          data = await response.json();
+          console.log('✅ Success! Endpoint worked:', endpoint);
+          console.log('Products fetched:', data.data?.length || 0);
+          break; // Found a working endpoint
+        } else {
+          const errorData = await response.json().catch(() => ({}));
+          console.log(`❌ ${response.status} at ${endpoint}:`, errorData);
+          lastError = { status: response.status, details: errorData, endpoint };
+        }
+      } catch (err) {
+        console.log(`❌ Error at ${endpoint}:`, err);
+        lastError = { error: err, endpoint };
+      }
     }
 
-    const data = await response.json();
-    console.log('Products fetched successfully:', data.data?.length || 0);
+    // If no endpoint worked, return the last error
+    if (!data) {
+      console.error('All product API endpoints failed. Last error:', lastError);
+      return NextResponse.json(
+        { 
+          error: 'Failed to fetch products from Whop - tried multiple endpoints',
+          lastError,
+          triedEndpoints: endpointsToTry
+        },
+        { status: lastError?.status || 500 }
+      );
+    }
 
     // Transform to match our expected format
     const formattedProducts = (data.data || []).map((product: any) => ({
