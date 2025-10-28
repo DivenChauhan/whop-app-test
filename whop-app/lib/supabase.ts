@@ -14,7 +14,7 @@ export const supabaseAdmin = createClient(
 
 // Database types
 export type MessageTag = 'question' | 'feedback' | 'confession';
-export type ProductCategory = 'main_product' | 'service' | 'feature_request' | 'bug_report' | 'other';
+export type ProductCategory = 'general' | 'feature_request' | 'service' | 'bug_report' | 'other';
 
 export interface Message {
   id: string;

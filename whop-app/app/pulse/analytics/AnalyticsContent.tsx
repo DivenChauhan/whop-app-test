@@ -48,10 +48,10 @@ export default function AnalyticsContent({ creatorId }: AnalyticsContentProps) {
 
   const getCategoryLabel = (category: string) => {
     const labels: Record<string, string> = {
-      main_product: '🚀 Product',
+      general: '📋 General',
+      feature_request: '🎁 Feature Request',
       service: '⚡ Service',
-      feature_request: '🎁 Feature',
-      bug_report: '🐛 Bug',
+      bug_report: '🐛 Bug Report',
       other: '📝 Other',
     };
     return labels[category] || category;

@@ -155,27 +155,15 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
             </button>
             <button
               type="button"
-              onClick={() => setProductCategory('digital')}
+              onClick={() => setProductCategory('feature_request')}
               disabled={isSubmitting}
               className={`flex-1 px-4 py-3 text-sm rounded-lg font-medium transition-all ${
-                productCategory === 'digital'
+                productCategory === 'feature_request'
                   ? 'bg-green-600/30 text-green-300 ring-2 ring-green-500'
                   : 'bg-white/[0.05] text-white hover:bg-white/[0.1] border border-white/[0.1]'
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
-              Digital
-            </button>
-            <button
-              type="button"
-              onClick={() => setProductCategory('physical')}
-              disabled={isSubmitting}
-              className={`flex-1 px-4 py-3 text-sm rounded-lg font-medium transition-all ${
-                productCategory === 'physical'
-                  ? 'bg-orange-600/30 text-orange-300 ring-2 ring-orange-500'
-                  : 'bg-white/[0.05] text-white hover:bg-white/[0.1] border border-white/[0.1]'
-              } disabled:opacity-50 disabled:cursor-not-allowed`}
-            >
-              Physical
+              Feature Request
             </button>
             <button
               type="button"
@@ -188,6 +176,30 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               Service
+            </button>
+            <button
+              type="button"
+              onClick={() => setProductCategory('bug_report')}
+              disabled={isSubmitting}
+              className={`flex-1 px-4 py-3 text-sm rounded-lg font-medium transition-all ${
+                productCategory === 'bug_report'
+                  ? 'bg-red-600/30 text-red-300 ring-2 ring-red-500'
+                  : 'bg-white/[0.05] text-white hover:bg-white/[0.1] border border-white/[0.1]'
+              } disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              Bug Report
+            </button>
+            <button
+              type="button"
+              onClick={() => setProductCategory('other')}
+              disabled={isSubmitting}
+              className={`flex-1 px-4 py-3 text-sm rounded-lg font-medium transition-all ${
+                productCategory === 'other'
+                  ? 'bg-gray-600/30 text-gray-300 ring-2 ring-gray-500'
+                  : 'bg-white/[0.05] text-white hover:bg-white/[0.1] border border-white/[0.1]'
+              } disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              Other
             </button>
           </div>
         </div>
