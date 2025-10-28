@@ -1,0 +1,48 @@
+# ===========================================
+# VERCEL ENVIRONMENT VARIABLES TEMPLATE
+# ===========================================
+# Copy these variables to your Vercel project settings
+# Replace the placeholder values with your actual values
+
+# ===========================================
+# WHOP CONFIGURATION (REQUIRED)
+# ===========================================
+# Your Whop company ID - provided when you install the app
+NEXT_PUBLIC_WHOP_COMPANY_ID=your_company_id_here
+
+# Your Whop API key for server-side operations
+WHOP_API_KEY=your_whop_api_key_here
+
+# ===========================================
+# SUPABASE CONFIGURATION (REQUIRED)
+# ===========================================
+# Your Supabase project URL
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+
+# Your Supabase anon key (public)
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+
+# Your Supabase service role key (private - for admin operations)
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
+
+# ===========================================
+# DEVELOPMENT SETTINGS (PRODUCTION)
+# ===========================================
+# Keep this FALSE in production to disable development fallbacks
+ENABLE_DEV_FALLBACK=false
+
+# ===========================================
+# OPTIONAL: DEVELOPMENT AGENT USER
+# ===========================================
+# Only needed if you want to test locally with a specific user
+# NEXT_PUBLIC_WHOP_AGENT_USER_ID=your_test_user_id_here
+
+# ===========================================
+# VERIFICATION CHECKLIST
+# ===========================================
+# ✅ NEXT_PUBLIC_WHOP_COMPANY_ID - Get from Whop app installation
+# ✅ WHOP_API_KEY - Get from Whop developer dashboard
+# ✅ NEXT_PUBLIC_SUPABASE_URL - Get from Supabase project settings
+# ✅ NEXT_PUBLIC_SUPABASE_ANON_KEY - Get from Supabase project settings
+# ✅ SUPABASE_SERVICE_ROLE_KEY - Get from Supabase project settings
+# ✅ ENABLE_DEV_FALLBACK - Set to "false" for production
