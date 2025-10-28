@@ -22,18 +22,9 @@ export interface Message {
   company_id: string;
   message: string;
   tag: MessageTag;
-  product_category?: ProductCategory; // Deprecated - keeping for backward compatibility
-  product_id?: string; // Whop product ID (prod_xxxxx)
-  product_name?: string; // Cached product name
+  product_category?: ProductCategory;
   created_at: string;
   reviewed: boolean;
-}
-
-export interface WhopProduct {
-  id: string;
-  name: string;
-  visibility: string;
-  created_at: number;
 }
 
 export interface Reply {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { Message, Reply, ProductCategory, WhopProduct } from '@/lib/supabase';
+import { Message, Reply, ProductCategory } from '@/lib/supabase';
 import { Button, Input, Typography } from '@whop/frosted-ui';
 import { 
   Copy, 
@@ -41,9 +41,6 @@ export default function DashboardContent({ creatorId, creatorSlug }: DashboardCo
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [filter, setFilter] = useState<'all' | 'question' | 'feedback' | 'confession'>('all');
   const [productCategoryFilter, setProductCategoryFilter] = useState<'all' | ProductCategory>('all');
-  const [productFilter, setProductFilter] = useState<string>('all');
-  const [products, setProducts] = useState<WhopProduct[]>([]);
-  const [loadingProducts, setLoadingProducts] = useState(true);
   const [copied, setCopied] = useState(false);
   const [origin, setOrigin] = useState('');
   const [selectedMessage, setSelectedMessage] = useState<MessageWithReactions | null>(null);
@@ -56,25 +53,6 @@ export default function DashboardContent({ creatorId, creatorSlug }: DashboardCo
     setOrigin(window.location.origin);
   }, []);
 
-  // Fetch products on mount
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch('/api/products');
-        if (response.ok) {
-          const { data } = await response.json();
-          setProducts(data || []);
-        }
-      } catch (err) {
-        console.error('Error fetching products:', err);
-      } finally {
-        setLoadingProducts(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
   const fetchMessages = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -83,7 +61,6 @@ export default function DashboardContent({ creatorId, creatorSlug }: DashboardCo
       const params = new URLSearchParams({ creatorId });
       if (filter !== 'all') params.append('tag', filter);
       if (productCategoryFilter !== 'all') params.append('productCategory', productCategoryFilter);
-      if (productFilter !== 'all') params.append('productId', productFilter);
 
       const response = await fetch(`/api/feedback?${params.toString()}`);
       if (!response.ok) throw new Error('Failed to fetch messages');
@@ -128,7 +105,7 @@ export default function DashboardContent({ creatorId, creatorSlug }: DashboardCo
     } finally {
       setIsLoading(false);
     }
-  }, [creatorId, filter, productCategoryFilter, productFilter]);
+  }, [creatorId, filter, productCategoryFilter]);
 
   useEffect(() => {
     fetchMessages();
@@ -560,37 +537,6 @@ export default function DashboardContent({ creatorId, creatorSlug }: DashboardCo
                 </button>
               </div>
 
-              <div className="w-px h-6 bg-white/10"></div>
-
-              {/* Product Filter - Shows actual Whop products */}
-              <div className="flex items-center gap-2">
-                <label className="text-sm font-medium !text-white whitespace-nowrap">Filter by Product:</label>
-                {loadingProducts ? (
-                  <div className="px-3 py-1.5 rounded-lg bg-white/[0.05] text-white text-sm">
-                    Loading...
-                  </div>
-                ) : products.length > 0 ? (
-                  <select
-                    value={productFilter}
-                    onChange={(e) => {
-                      setProductFilter(e.target.value);
-                      setCurrentPage(1); // Reset to first page on filter change
-                    }}
-                    className="px-3 py-1.5 rounded-lg bg-white/[0.05] border border-white/[0.08] text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="all" className="bg-[#0A0A0A] text-white">All Products</option>
-                    {products.map((product) => (
-                      <option key={product.id} value={product.id} className="bg-[#0A0A0A] text-white">
-                        {product.name}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <div className="px-3 py-1.5 rounded-lg bg-white/[0.05] text-white text-sm">
-                    No products
-                  </div>
-                )}
-              </div>
             </div>
           </div>
         )}

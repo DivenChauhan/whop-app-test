@@ -90,21 +90,6 @@ export async function GET(request: NextRequest) {
       return acc;
     }, {} as Record<string, number>);
 
-    // Product distribution (actual Whop products)
-    const productDistribution = messages.reduce((acc, m) => {
-      if (m.product_id && m.product_name) {
-        if (!acc[m.product_id]) {
-          acc[m.product_id] = {
-            id: m.product_id,
-            name: m.product_name,
-            count: 0
-          };
-        }
-        acc[m.product_id].count += 1;
-      }
-      return acc;
-    }, {} as Record<string, { id: string; name: string; count: number }>);
-
     // Reaction type distribution
     const reactionTypeDistribution = messages.reduce((acc, m) => {
       m.reactions?.forEach((r: any) => {
@@ -206,7 +191,6 @@ export async function GET(request: NextRequest) {
       distributions: {
         tags: tagDistribution,
         productCategories: productCategoryDistribution,
-        products: Object.values(productDistribution),
         reactionTypes: reactionTypeDistribution,
         hours: hourDistribution,
       },

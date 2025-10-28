@@ -6,7 +6,7 @@ import { getUserAuth } from '@/lib/auth';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { creatorId, message, tag, productCategory, productId, productName } = body;
+    const { creatorId, message, tag, productCategory } = body;
 
     if (!creatorId || !message || !tag) {
       return NextResponse.json(
@@ -32,9 +32,7 @@ export async function POST(request: NextRequest) {
         company_id: companyId,
         message,
         tag,
-        product_category: productCategory || null, // Keep for backward compatibility
-        product_id: productId || null,
-        product_name: productName || null,
+        product_category: productCategory || null,
         reviewed: false,
       })
       .select()
@@ -66,7 +64,6 @@ export async function GET(request: NextRequest) {
     const reviewedFilter = searchParams.get('reviewed');
     const tagFilter = searchParams.get('tag');
     const productCategoryFilter = searchParams.get('productCategory');
-    const productIdFilter = searchParams.get('productId');
 
     if (!creatorId) {
       return NextResponse.json(
@@ -114,11 +111,6 @@ export async function GET(request: NextRequest) {
 
     if (productCategoryFilter) {
       query = query.eq('product_category', productCategoryFilter);
-    }
-
-    // Filter by Whop product ID
-    if (productIdFilter && productIdFilter !== 'all') {
-      query = query.eq('product_id', productIdFilter);
     }
 
     const { data, error } = await query;

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { MessageTag, ProductCategory, WhopProduct } from '@/lib/supabase';
+import { useState } from 'react';
+import { MessageTag, ProductCategory } from '@/lib/supabase';
 
 interface MessageFormProps {
   creatorId: string;
@@ -13,31 +13,9 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
   const [message, setMessage] = useState('');
   const [tag, setTag] = useState<MessageTag>('feedback');
   const [productCategory, setProductCategory] = useState<ProductCategory | undefined>(undefined);
-  const [selectedProduct, setSelectedProduct] = useState<{ id: string; name: string } | null>(null);
-  const [products, setProducts] = useState<WhopProduct[]>([]);
-  const [loadingProducts, setLoadingProducts] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-
-  // Fetch products on mount
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch('/api/products');
-        if (response.ok) {
-          const { data } = await response.json();
-          setProducts(data || []);
-        }
-      } catch (err) {
-        console.error('Error fetching products:', err);
-      } finally {
-        setLoadingProducts(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,8 +40,6 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
           message: message.trim(),
           tag,
           productCategory,
-          productId: selectedProduct?.id || null,
-          productName: selectedProduct?.name || null,
         }),
       });
 
@@ -75,7 +51,6 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
       setMessage('');
       setTag('feedback');
       setProductCategory(undefined);
-      setSelectedProduct(null);
 
       if (onSuccess) {
         onSuccess();
@@ -160,49 +135,61 @@ export default function MessageForm({ creatorId, creatorName, onSuccess }: Messa
           </div>
         </div>
 
-        {/* Product Selection - Shows actual Whop products */}
+        {/* Product Category Selection */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-white mb-3">
-            Related Product <span className="text-white text-xs">(Optional)</span>
+            Product Category <span className="text-white text-xs">(Optional)</span>
           </label>
-          
-          {loadingProducts ? (
-            <div className="px-4 py-3 bg-white/[0.05] border border-white/[0.08] rounded-lg text-white text-sm">
-              Loading products...
-            </div>
-          ) : products.length > 0 ? (
-            <select
-              value={selectedProduct?.id || ''}
-              onChange={(e) => {
-                const productId = e.target.value;
-                if (productId) {
-                  const product = products.find(p => p.id === productId);
-                  setSelectedProduct(product ? { id: product.id, name: product.name } : null);
-                } else {
-                  setSelectedProduct(null);
-                }
-              }}
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => setProductCategory(undefined)}
               disabled={isSubmitting}
-              className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.08] rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className={`flex-1 px-4 py-3 text-sm rounded-lg font-medium transition-all ${
+                productCategory === undefined
+                  ? 'bg-blue-600/30 text-blue-300 ring-2 ring-blue-500'
+                  : 'bg-white/[0.05] text-white hover:bg-white/[0.1] border border-white/[0.1]'
+              } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
-              <option value="">Select a product (optional)</option>
-              {products.map((product) => (
-                <option key={product.id} value={product.id} className="bg-[#0A0A0A] text-white">
-                  {product.name}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <div className="px-4 py-3 bg-white/[0.05] border border-white/[0.08] rounded-lg text-white text-sm">
-              No products found. This creator hasn't added any products yet.
-            </div>
-          )}
-          
-          {selectedProduct && (
-            <p className="mt-2 text-xs text-white">
-              ✓ Feedback will be associated with: <span className="font-semibold">{selectedProduct.name}</span>
-            </p>
-          )}
+              General
+            </button>
+            <button
+              type="button"
+              onClick={() => setProductCategory('digital')}
+              disabled={isSubmitting}
+              className={`flex-1 px-4 py-3 text-sm rounded-lg font-medium transition-all ${
+                productCategory === 'digital'
+                  ? 'bg-green-600/30 text-green-300 ring-2 ring-green-500'
+                  : 'bg-white/[0.05] text-white hover:bg-white/[0.1] border border-white/[0.1]'
+              } disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              Digital
+            </button>
+            <button
+              type="button"
+              onClick={() => setProductCategory('physical')}
+              disabled={isSubmitting}
+              className={`flex-1 px-4 py-3 text-sm rounded-lg font-medium transition-all ${
+                productCategory === 'physical'
+                  ? 'bg-orange-600/30 text-orange-300 ring-2 ring-orange-500'
+                  : 'bg-white/[0.05] text-white hover:bg-white/[0.1] border border-white/[0.1]'
+              } disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              Physical
+            </button>
+            <button
+              type="button"
+              onClick={() => setProductCategory('service')}
+              disabled={isSubmitting}
+              className={`flex-1 px-4 py-3 text-sm rounded-lg font-medium transition-all ${
+                productCategory === 'service'
+                  ? 'bg-purple-600/30 text-purple-300 ring-2 ring-purple-500'
+                  : 'bg-white/[0.05] text-white hover:bg-white/[0.1] border border-white/[0.1]'
+              } disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              Service
+            </button>
+          </div>
         </div>
 
         {error && (

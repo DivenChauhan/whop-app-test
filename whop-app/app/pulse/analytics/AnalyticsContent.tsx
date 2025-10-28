@@ -255,42 +255,6 @@ export default function AnalyticsContent({ creatorId }: AnalyticsContentProps) {
               </div>
             </div>
 
-            {/* Product-Specific Feedback */}
-            {analytics.distributions.products && analytics.distributions.products.length > 0 && (
-              <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-6">
-                <Typography as="h3" variant="title-sm" className="!text-white mb-2 font-semibold">
-                  Feedback by Product
-                </Typography>
-                <Typography as="p" variant="body-sm" className="!text-white mb-5">
-                  See which of your Whop products are receiving the most feedback
-                </Typography>
-                <div className="space-y-4">
-                  {analytics.distributions.products
-                    .sort((a, b) => b.count - a.count)
-                    .map((product) => (
-                    <div key={product.id}>
-                      <div className="flex justify-between items-center mb-2">
-                        <Typography as="span" variant="body" className="!text-white font-medium">
-                          {product.name}
-                        </Typography>
-                        <Typography as="span" variant="body" className="!text-white">
-                          {product.count} ({((product.count / analytics.summary.totalMessages) * 100).toFixed(0)}%)
-                        </Typography>
-                      </div>
-                      <div className="w-full bg-white/[0.05] rounded-full h-4 overflow-hidden">
-                        <div
-                          className="h-full rounded-full transition-all"
-                          style={{ 
-                            width: `${(product.count / analytics.summary.totalMessages) * 100}%`,
-                            background: 'linear-gradient(to right, rgb(37, 99, 235), rgb(29, 78, 216))'
-                          }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Product Categories (Legacy - for backward compatibility) */}
             {Object.keys(analytics.distributions.productCategories).length > 0 && (
