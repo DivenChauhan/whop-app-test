@@ -56,20 +56,21 @@ export async function getUserAuth(): Promise<AuthResult> {
     };
   } catch (error) {
     // User is not authenticated (public visitor)
-    if (process.env.NODE_ENV === "development") {
-      // In development, check if we should use the agent user
+    // In production, we don't provide fallback authentication
+    // Only allow development fallback if explicitly enabled
+    if (process.env.NODE_ENV === "development" && process.env.ENABLE_DEV_FALLBACK === "true") {
       const agentUserId = process.env.NEXT_PUBLIC_WHOP_AGENT_USER_ID;
       if (agentUserId) {
-        console.log("⚠️ No authenticated user, treating agent user as creator for local testing");
+        console.log("⚠️ Development fallback enabled - treating agent user as creator");
         try {
           const user = await whopSdk.users.getUser({ userId: agentUserId });
           return {
             userId: agentUserId,
             user,
             companyId: companyId || null,
-            isCreator: true, // Agent user is creator in dev mode
+            isCreator: true,
             isAuthenticated: true,
-            hasCompanyAccess: true, // Agent user has access in dev mode
+            hasCompanyAccess: true,
           };
         } catch {
           // Ignore if agent user doesn't exist

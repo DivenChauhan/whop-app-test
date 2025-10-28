@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import MessageForm from '@/components/MessageForm';
-import { supabase } from '@/lib/supabase';
+import { getCreatorByFeedbackLink } from '@/lib/creator';
 
 interface PageProps {
   params: Promise<{
@@ -8,29 +8,9 @@ interface PageProps {
   }>;
 }
 
-async function getCreator(slug: string) {
-  try {
-    const { data, error } = await supabase
-      .from('creators')
-      .select('*')
-      .eq('feedback_link', slug)
-      .single();
-
-    if (error) {
-      console.error('Error fetching creator:', error);
-      return null;
-    }
-
-    return data;
-  } catch (error) {
-    console.error('Error fetching creator:', error);
-    return null;
-  }
-}
-
 export default async function PublicFeedbackPage({ params }: PageProps) {
   const { creatorSlug } = await params;
-  const creator = await getCreator(creatorSlug);
+  const creator = await getCreatorByFeedbackLink(creatorSlug);
 
   if (!creator) {
     notFound();

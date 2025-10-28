@@ -1,15 +1,24 @@
 import { getUserAuth } from '@/lib/auth';
+import { getCreatorForCompany } from '@/lib/creator';
 import FeedContent from './FeedContent';
-
-// This page is public - anyone can access
-const CREATOR_ID = '00000000-0000-0000-0000-000000000001';
-const CREATOR_NAME = 'Test Creator';
+import { notFound } from 'next/navigation';
 
 export default async function PublicFeedPage() {
   // Check if user is authenticated and a creator (but don't require it)
   const auth = await getUserAuth();
   
-  return <FeedContent creatorId={CREATOR_ID} creatorName={CREATOR_NAME} isCreator={auth.isCreator} />;
+  if (!auth.companyId) {
+    throw new Error('Company ID not found');
+  }
+
+  // Get the creator for this company dynamically
+  const creator = await getCreatorForCompany(auth.companyId);
+  
+  if (!creator) {
+    notFound();
+  }
+  
+  return <FeedContent creatorId={creator.id} creatorName={creator.name} isCreator={auth.isCreator} />;
 }
 
 // Type exports for the client component

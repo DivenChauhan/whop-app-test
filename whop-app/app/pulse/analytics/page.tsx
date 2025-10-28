@@ -1,14 +1,24 @@
 import { requireCreator } from '@/lib/auth';
+import { getCreatorForCompany } from '@/lib/creator';
 import AnalyticsContent from './AnalyticsContent';
-
-// This page is creator-only - protected by authentication
-const CREATOR_ID = '00000000-0000-0000-0000-000000000001';
+import { notFound } from 'next/navigation';
 
 export default async function AnalyticsPage() {
   // Protect this page - only creators can access
-  await requireCreator();
+  const auth = await requireCreator();
   
-  return <AnalyticsContent creatorId={CREATOR_ID} />;
+  if (!auth.companyId) {
+    throw new Error('Company ID not found');
+  }
+
+  // Get the creator for this company dynamically
+  const creator = await getCreatorForCompany(auth.companyId);
+  
+  if (!creator) {
+    notFound();
+  }
+  
+  return <AnalyticsContent creatorId={creator.id} />;
 }
 
 // Type definitions for the client component

@@ -1,13 +1,22 @@
 import { requireCreator } from '@/lib/auth';
+import { getCreatorForCompany } from '@/lib/creator';
 import DashboardContent from './DashboardContent';
-
-// This page is creator-only - protected by authentication
-const CREATOR_ID = '00000000-0000-0000-0000-000000000001';
-const CREATOR_SLUG = 'testcreator';
+import { notFound } from 'next/navigation';
 
 export default async function DashboardPage() {
   // Protect this page - only creators can access
-  await requireCreator();
+  const auth = await requireCreator();
   
-  return <DashboardContent creatorId={CREATOR_ID} creatorSlug={CREATOR_SLUG} />;
+  if (!auth.companyId) {
+    throw new Error('Company ID not found');
+  }
+
+  // Get the creator for this company dynamically
+  const creator = await getCreatorForCompany(auth.companyId);
+  
+  if (!creator) {
+    notFound();
+  }
+  
+  return <DashboardContent creatorId={creator.id} creatorSlug={creator.feedback_link} />;
 }

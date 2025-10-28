@@ -136,11 +136,12 @@ CREATE POLICY "Allow public read access to reactions"
 DELETE FROM creators WHERE id = '00000000-0000-0000-0000-000000000001';
 
 -- Insert new test creator
-INSERT INTO creators (id, name, email, feedback_link)
+INSERT INTO creators (id, name, email, feedback_link, company_id)
 VALUES (
   '00000000-0000-0000-0000-000000000001',
   'Test Creator',
   'test@example.com',
-  'testcreator'
+  'testcreator',
+  '00000000-0000-0000-0000-000000000000'
 );
 
